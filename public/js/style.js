@@ -1,12 +1,4 @@
-document.getElementById("showPopupBtn").addEventListener("click", function() {
-    document.getElementById("loginPopup").style.display = "block";
-    document.body.style.overflow = "hidden"; // Menonaktifkan scroll pada body
-  });
-  
-  document.getElementById("closePopupBtn").addEventListener("click", function() {
-    document.getElementById("loginPopup").style.display = "none";
-    document.body.style.overflow = "auto"; // Mengaktifkan kembali scroll pada body
-  });
+
 
   let sections = document.querySelectorAll('section');
   let navLinks = document.querySelectorAll('header nav a');
