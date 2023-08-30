@@ -1,11 +1,26 @@
 <?php
 require '../../app/config.php';
+
+$conn = new mysqli('localhost', 'root', '', 'pemandian');
+
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-$sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi";
-$result = $conn->query($sql);
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $user = $_POST["id_user"];
+    $tiket = $_POST["id_tiket"];
+    $tgl_pemesanan = $_POST["tgl_pemesanan"];
+    $total_harga = $_POST["total_harga"];
+
+    $sql = "INSERT INTO transaksi (id_user, id_tiket, tgl_pemesanan, total_harga) VALUES ('$user', '$tiket', '$tgl_pemesanan', '$total_harga')";
+
+    if ($conn->query($sql) === true) {
+        header("location: transaksi.php");
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -52,20 +67,20 @@ $result = $conn->query($sql);
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item">
-                <a href="../dashboard/dashboard.php" class='sidebar-link'>
+                <a href="../dashboard/dashboard.html" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li
             class="sidebar-item has-sub active">
-            <a href="#" class='sidebar-link'>
+            <a href="../dashboard/dashboard.html" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
             </a>
             <ul class="submenu">
                 <li class="submenu-item active">
-                    <a href="#">Transaksi</a>
+                    <a href="transaksi.php">Transaksi</a>
                 </li>
             </ul>
         </li>
@@ -103,59 +118,67 @@ $result = $conn->query($sql);
 <div class="page-content">
     <section class="row">
                 <div class="card">
-                    <div class="card-header">
-                        <h4 class="card-title">Tabel Transaksi</h4>
-                    </div>
-                    <div class="card-content">
-                        <div class="card-body">
-            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                    <div class="col-md-6 col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Tambah Data Transaksi</h4>
+                  </div>
+                  <div class="card-content">
+                    <div class="card-body">
+                      <form class="form form-horizontal" method="post">
+                        <div class="form-body">
+                          <div class="row">
+                            <div class="col-md-4">
+                              <label for="email-horizontal">ID USER</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="email-horizontal" class="form-control" name="id_user" placeholder="id user">
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">ID TIKET</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="id_tiket" placeholder="id_tiket">
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">TANGGAL PEMESANAN</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="date" id="contact-info-horizontal" class="form-control" name="tgl_pemesanan" placeholder="tanggal pemesanan">
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">TOTAL HARGA</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="total_harga" placeholder="total harga">
+                            </div>
+                            <div class="col-sm-12 d-flex justify-content-end">
+                              <button type="submit" class="btn btn-primary me-1 mb-1">
+                                Submit
+                              </button>
+                              <button type="reset" class="btn btn-light-secondary me-1 mb-1">
+                                Reset
+                              </button>
+                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='transaksi.php'">
+                                    Kembali
+                                </button>
+                            </div>
+                          </div>
                         </div>
-
-                        <!-- Table with no outer spacing -->
-                        <div class="table-responsive">
-                            <table class="table mb-0 table-lg">
-                                <thead>
-                                    <tr>
-                                        <th>id_transaksi</th>
-                                        <th>id_user</th>
-                                        <th>id_tiket</th>
-   										<th>tgl_pemesanan</th>
-                                        <th>total_harga</th>
-                                        <th colspan="2">action</th>
-                                    </tr>
-                                </thead>
-                                <tbody> 
-                                <?php
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "<td>" . $row["id_transaksi"] . "</td>";
-                                            echo "<td>" . $row["id_user"] . "</td>";
-                                            echo "<td>" . $row["id_tiket"] . "</td>";
-                                            echo "<td>" . $row["tgl_pemesanan"] . "</td>";
-                                            echo "<td>" . $row["total_harga"] . "</td>";
-                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
-                                            echo "</tr>";
-                                        }
-                                    } else {
-                                        echo "<tr><td colspan='6'>Tidak ada data.</td></tr>";
-                                    }
-                                ?>
-
-                                </tbody>
-                            </table>
-                        </div>
+                      </form>
                     </div>
+                  </div>
                 </div>
-            </div>        
+              </div>
+                </div>
+        </div>
     </section>
 </div>
 
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <p>2023 © Pemandian</p>
+                        <p>2023 &copy; Pemandian</p>
                     </div>
                 </div>
             </footer>

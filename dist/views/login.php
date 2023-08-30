@@ -8,7 +8,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Membuat prepared statement
-    $stmt = $conn->prepare("SELECT id FROM users WHERE username = ? AND password = ?");
+    $stmt = $conn->prepare("SELECT id_user FROM users WHERE username = ? AND password = ?");
     $stmt->bind_param("ss", $username, $password);
     $stmt->execute();
     $stmt->store_result();

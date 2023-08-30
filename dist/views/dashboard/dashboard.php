@@ -43,7 +43,7 @@
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item active ">
-                <a href="../dashboard/dashboard.html" class='sidebar-link'>
+                <a href="../dashboard/dashboard.php" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
@@ -56,7 +56,7 @@
             </a>
             <ul class="submenu">
                 <li class="submenu-item">
-                    <a href="../tiket/transaksi.html">Transaksi</a>
+                    <a href="../tiket/transaksi.php">Transaksi</a>
                 </li>
             </ul>
         </li>
