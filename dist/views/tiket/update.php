@@ -7,48 +7,42 @@ if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
 
-$id_transaksi = ""; // Inisialisasi nilai awal untuk id_transaksi
+$id_tiket = ""; // Inisialisasi nilai awal untuk id_transaksi
 
 if (isset($_GET["id"])) {
-    $id_transaksi = $_GET["id"];
-    $sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi WHERE id_transaksi='$id_transaksi'";
+    $id_tiket = $_GET["id"];
+    $sql = "SELECT * FROM tiket WHERE id_tiket='$id_tiket'";
     $result = $conn->query($sql);
 
     if ($result->num_rows > 0) {
         $data = $result->fetch_assoc();
-        $id_user = $data["id_user"];
-        $id_tiket = $data["id_tiket"];
-        $tgl_pemesanan = $data["tgl_pemesanan"];
-        $total_harga = $data["total_harga"];
+        $nama_tiket = $data["nama_tiket"];
+        $harga = $data["harga"];        
     } else {
         echo "Data tidak ditemukan.";
     }
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id_user = $_POST["id_user"];
-    $id_tiket = $_POST["id_tiket"];
-    $tgl_pemesanan = $_POST["tgl_pemesanan"];
-    $total_harga = $_POST["total_harga"];
+    $nama_tiket = $_POST["nama_tiket"];
+    $harga = $_POST["harga"];
 
     // Cek apakah data diubah oleh user atau tidak
-    $sql_select = "SELECT * FROM transaksi WHERE id_transaksi='$id_transaksi'";
+    $sql_select = "SELECT * FROM tiket WHERE id_tiket='$id_tiket'";
     $result_select = $conn->query($sql_select);
     
     if ($result_select->num_rows > 0) {
         $data = $result_select->fetch_assoc();
         
         // Mengambil data yang diubah oleh user atau menggunakan data sebelumnya
-        $id_user = ($id_user !== '') ? $id_user : $data["id_user"];
-        $id_tiket = ($id_tiket !== '') ? $id_tiket : $data["id_tiket"];
-        $tgl_pemesanan = ($tgl_pemesanan !== '') ? $tgl_pemesanan : $data["tgl_pemesanan"];
-        $total_harga = ($total_harga !== '') ? $total_harga : $data["total_harga"];
+        $nama_tiket = ($nama_tiket !== '') ? $nama_tiket : $data["nama_tiket"];
+        $harga = ($harga !== '') ? $harga : $data["harga"];
         
         // Update data di database
-        $sql_update = "UPDATE transaksi SET id_user='$id_user', id_tiket='$id_tiket', tgl_pemesanan='$tgl_pemesanan', total_harga='$total_harga' WHERE id_transaksi='$id_transaksi'";
+        $sql_update = "UPDATE tiket SET nama_tiket='$nama_tiket', harga='$harga' WHERE id_tiket='$id_tiket'";
         
         if ($conn->query($sql_update) === true) {
-            header("Location: transaksi.php"); // Ganti transaksi.php dengan halaman yang sesuai
+            header("Location: tiket.php"); // Ganti transaksi.php dengan halaman yang sesuai
             exit;
         } else {
             echo "Error: " . $sql_update . "<br>" . $conn->error;
@@ -59,14 +53,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?> 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transaksi - Pemandian</title>
+    <title>tiket - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -111,17 +104,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </a>
             </li>
             <li
-            class="sidebar-item has-sub active">
+            class="sidebar-item has-sub">
             <a href="../dashboard/dashboard.html" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
             </a>
             <ul class="submenu">
+                <li class="submenu-item">
+                    <a href="../transaksi/transaksi.php">Transaksi</a>
+                </li>
                 <li class="submenu-item active">
-                    <a href="transaksi.php">Transaksi</a>
+                    <a href="tiket.php">Tiket</a>
                 </li>
             </ul>
         </li>
+        <li
+            class="sidebar-item has-sub">
+            <a href="#" class='sidebar-link'>
+                <i class="fa fa-comment" aria-hidden="true"></i>
+                <span>Ulasan</span>
+            </a>
+            <ul class="submenu">
+                <li class="submenu-item">
+                    <a href="../ulasan/ulasan.php">kritik & saran</a>
+                </li>
+            </ul>
         </ul>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
@@ -159,45 +166,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-md-6 col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Tambah Data Transaksi</h4>
+                    <h4 class="card-title">Update Data Transaksi</h4>
                   </div>
                   <div class="card-content">
                     <div class="card-body">
                       <form class="form form-horizontal" method="post">
                         <div class="form-body">
                           <div class="row">
-                          <div class="col-md-4">
-                              <label for="email-horizontal">ID USER</label>
+                            <div class="col-md-4">
+                              <label for="email-horizontal">NAMA TIKET</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="email-horizontal" class="form-control" name="id_user" placeholder="id user" value="<?php echo $id_user; ?>">
+                              <input type="text" id="email-horizontal" class="form-control" name="nama_tiket" placeholder="nama tiket"  value="<?php echo $nama_tiket; ?>">
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">ID TIKET</label>
+                              <label for="contact-info-horizontal">HARGA TIKET</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="id_tiket" placeholder="id_tiket" value="<?php echo $id_tiket; ?>">
-                            </div>
-                            <div class="col-md-4">
-                              <label for="contact-info-horizontal">TANGGAL PEMESANAN</label>
-                            </div>
-                            <div class="col-md-8 form-group">
-                              <input type="date" id="contact-info-horizontal" class="form-control" name="tgl_pemesanan" placeholder="tanggal pemesanan"  value="<?php echo $tgl_pemesanan; ?>">
-                            </div>
-                            <div class="col-md-4">
-                              <label for="contact-info-horizontal">TOTAL HARGA</label>
-                            </div>
-                            <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="total_harga" placeholder="total harga" value="<?php echo $total_harga; ?>">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="harga" placeholder="harga tiket"  value="<?php echo $harga; ?>">
                             </div>
                             <div class="col-sm-12 d-flex justify-content-end">
                               <button type="submit" class="btn btn-primary me-1 mb-1">
-                                Update
+                                Submit
                               </button>
                               <button type="reset" class="btn btn-light-secondary me-1 mb-1">
                                 Reset
                               </button>
-                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='transaksi.php'">
+                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='tiket.php'">
                                     Kembali
                                 </button>
                             </div>

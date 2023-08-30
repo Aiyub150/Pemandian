@@ -1,10 +1,19 @@
+<?php
+require '../../app/config.php';
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
+}
+
+$sql = "SELECT * FROM tiket";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Pemandian</title>
+    <title>tiket - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -42,14 +51,14 @@
         <ul class="menu">
             <li class="sidebar-title">Menu</li>
             <li
-                class="sidebar-item active ">
+                class="sidebar-item">
                 <a href="../dashboard/dashboard.php" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li
-            class="sidebar-item has-sub">
+            class="sidebar-item has-sub active">
             <a href="#" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
@@ -58,8 +67,8 @@
                 <li class="submenu-item">
                     <a href="../transaksi/transaksi.php">Transaksi</a>
                 </li>
-                <li class="submenu-item">
-                    <a href="../tiket/tiket.php">Tiket</a>
+                <li class="submenu-item active">
+                    <a href="#">Tiket</a>
                 </li>
             </ul>
         </li>
@@ -103,124 +112,60 @@
             </header>
             
 <div class="page-heading">
-    <h3>Dashboard</h3>
+    <h3>Tiket - Transaksi</h3>
 </div>
 <div class="page-content">
     <section class="row">
-        <div class="col-12 col-lg-9">
-            <div class="row">
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon purple mb-2">
-                                        <i class="iconly-boldShow"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Profile Views</h6>
-                                    <h6 class="font-extrabold mb-0">112.000</h6>
-                                </div>
-                            </div>
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Tabel Transaksi</h4>
                     </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon blue mb-2">
-                                        <i class="iconly-boldProfile"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Followers</h6>
-                                    <h6 class="font-extrabold mb-0">183.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon green mb-2">
-                                        <i class="iconly-boldAdd-User"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Following</h6>
-                                    <h6 class="font-extrabold mb-0">80.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon red mb-2">
-                                        <i class="iconly-boldBookmark"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Saved Post</h6>
-                                    <h6 class="font-extrabold mb-0">112</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Pengunjung</h4>
-                        </div>
+                    <div class="card-content">
                         <div class="card-body">
-                            <div id="chart-profile-visit"></div>
+            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                        </div>
+
+                        <!-- Table with no outer spacing -->
+                        <div class="table-responsive">
+                            <table class="table mb-0 table-lg">
+                                <thead>
+                                    <tr>
+                                        <th>id_tiket</th>
+                                        <th>nama_tiket</th>
+   										<th>harga</th>
+                                        <th colspan="2">action</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                <?php
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row["id_tiket"] . "</td>";
+                                            echo "<td>" . $row["nama_tiket"] . "</td>";
+                                            echo "<td>" . $row["harga"] . "</td>";
+                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_tiket"] . '"><i class="bi bi-pencil"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_tiket"] . '"><i class="fa fa-trash"></i></a></td>';
+                                            echo "</tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='5' style='text-align: center;'>Tidak ada data.</td></tr>";
+                                    }
+                                ?>
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-4">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl">
-                            <img src="../../../public/assets/images/faces/1.jpg" alt="Face 1">
-                        </div>
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">John Duck</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h4>Usia Pengunjung</h4>
-                </div>
-                <div class="card-body">
-                    <div id="chart-visitors-profile"></div>
-                </div>
-            </div>
-        </div>
+            </div>        
     </section>
 </div>
 
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <p>2023 &copy; Pemandian</p>
+                        <p>2023 © Pemandian</p>
                     </div>
                 </div>
             </footer>

@@ -1,10 +1,72 @@
+<?php
+require '../../app/config.php';
+
+$conn = new mysqli('localhost', 'root', '', 'pemandian');
+
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
+}
+
+$id_transaksi = ""; // Inisialisasi nilai awal untuk id_transaksi
+
+if (isset($_GET["id"])) {
+    $id_transaksi = $_GET["id"];
+    $sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi WHERE id_transaksi='$id_transaksi'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $data = $result->fetch_assoc();
+        $id_user = $data["id_user"];
+        $id_tiket = $data["id_tiket"];
+        $tgl_pemesanan = $data["tgl_pemesanan"];
+        $total_harga = $data["total_harga"];
+    } else {
+        echo "Data tidak ditemukan.";
+    }
+}
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id_user = $_POST["id_user"];
+    $id_tiket = $_POST["id_tiket"];
+    $tgl_pemesanan = $_POST["tgl_pemesanan"];
+    $total_harga = $_POST["total_harga"];
+
+    // Cek apakah data diubah oleh user atau tidak
+    $sql_select = "SELECT * FROM transaksi WHERE id_transaksi='$id_transaksi'";
+    $result_select = $conn->query($sql_select);
+    
+    if ($result_select->num_rows > 0) {
+        $data = $result_select->fetch_assoc();
+        
+        // Mengambil data yang diubah oleh user atau menggunakan data sebelumnya
+        $id_user = ($id_user !== '') ? $id_user : $data["id_user"];
+        $id_tiket = ($id_tiket !== '') ? $id_tiket : $data["id_tiket"];
+        $tgl_pemesanan = ($tgl_pemesanan !== '') ? $tgl_pemesanan : $data["tgl_pemesanan"];
+        $total_harga = ($total_harga !== '') ? $total_harga : $data["total_harga"];
+        
+        // Update data di database
+        $sql_update = "UPDATE transaksi SET id_user='$id_user', id_tiket='$id_tiket', tgl_pemesanan='$tgl_pemesanan', total_harga='$total_harga' WHERE id_transaksi='$id_transaksi'";
+        
+        if ($conn->query($sql_update) === true) {
+            header("Location: transaksi.php"); // Ganti transaksi.php dengan halaman yang sesuai
+            exit;
+        } else {
+            echo "Error: " . $sql_update . "<br>" . $conn->error;
+        }
+    } else {
+        echo "Data tidak ditemukan.";
+    }
+}
+?> 
+
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Pemandian</title>
+    <title>transaksi - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -42,24 +104,21 @@
         <ul class="menu">
             <li class="sidebar-title">Menu</li>
             <li
-                class="sidebar-item active ">
-                <a href="../dashboard/dashboard.php" class='sidebar-link'>
+                class="sidebar-item">
+                <a href="../dashboard/dashboard.html" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li
-            class="sidebar-item has-sub">
-            <a href="#" class='sidebar-link'>
+            class="sidebar-item has-sub active">
+            <a href="../dashboard/dashboard.html" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
             </a>
             <ul class="submenu">
-                <li class="submenu-item">
-                    <a href="../transaksi/transaksi.php">Transaksi</a>
-                </li>
-                <li class="submenu-item">
-                    <a href="../tiket/tiket.php">Tiket</a>
+                <li class="submenu-item active">
+                    <a href="transaksi.php">Transaksi</a>
                 </li>
             </ul>
         </li>
@@ -103,116 +162,64 @@
             </header>
             
 <div class="page-heading">
-    <h3>Dashboard</h3>
+    <h3>Tiket - Transaksi</h3>
 </div>
 <div class="page-content">
     <section class="row">
-        <div class="col-12 col-lg-9">
-            <div class="row">
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon purple mb-2">
-                                        <i class="iconly-boldShow"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Profile Views</h6>
-                                    <h6 class="font-extrabold mb-0">112.000</h6>
-                                </div>
+                <div class="card">
+                    <div class="col-md-6 col-12">
+                <div class="card">
+                  <div class="card-header">
+                    <h4 class="card-title">Tambah Data Transaksi</h4>
+                  </div>
+                  <div class="card-content">
+                    <div class="card-body">
+                      <form class="form form-horizontal" method="post">
+                        <div class="form-body">
+                          <div class="row">
+                          <div class="col-md-4">
+                              <label for="email-horizontal">ID USER</label>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon blue mb-2">
-                                        <i class="iconly-boldProfile"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Followers</h6>
-                                    <h6 class="font-extrabold mb-0">183.000</h6>
-                                </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="email-horizontal" class="form-control" name="id_user" placeholder="id user" value="<?php echo $id_user; ?>">
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon green mb-2">
-                                        <i class="iconly-boldAdd-User"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Following</h6>
-                                    <h6 class="font-extrabold mb-0">80.000</h6>
-                                </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">ID TIKET</label>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon red mb-2">
-                                        <i class="iconly-boldBookmark"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Saved Post</h6>
-                                    <h6 class="font-extrabold mb-0">112</h6>
-                                </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="id_tiket" placeholder="id_tiket" value="<?php echo $id_tiket; ?>">
                             </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">TANGGAL PEMESANAN</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="date" id="contact-info-horizontal" class="form-control" name="tgl_pemesanan" placeholder="tanggal pemesanan"  value="<?php echo $tgl_pemesanan; ?>">
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">TOTAL HARGA</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="total_harga" placeholder="total harga" value="<?php echo $total_harga; ?>">
+                            </div>
+                            <div class="col-sm-12 d-flex justify-content-end">
+                              <button type="submit" class="btn btn-primary me-1 mb-1">
+                                Update
+                              </button>
+                              <button type="reset" class="btn btn-light-secondary me-1 mb-1">
+                                Reset
+                              </button>
+                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='transaksi.php'">
+                                    Kembali
+                                </button>
+                            </div>
+                          </div>
                         </div>
+                      </form>
                     </div>
+                  </div>
                 </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Pengunjung</h4>
-                        </div>
-                        <div class="card-body">
-                            <div id="chart-profile-visit"></div>
-                        </div>
-                    </div>
+              </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-4">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl">
-                            <img src="../../../public/assets/images/faces/1.jpg" alt="Face 1">
-                        </div>
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">John Duck</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h4>Usia Pengunjung</h4>
-                </div>
-                <div class="card-body">
-                    <div id="chart-visitors-profile"></div>
-                </div>
-            </div>
         </div>
     </section>
 </div>

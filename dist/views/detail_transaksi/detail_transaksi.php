@@ -58,7 +58,7 @@ $result = $conn->query($sql);
                 </a>
             </li>
             <li
-            class="sidebar-item has-sub active">
+            class="sidebar-item has-sub">
             <a href="#" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
@@ -67,8 +67,22 @@ $result = $conn->query($sql);
                 <li class="submenu-item active">
                     <a href="#">Transaksi</a>
                 </li>
+                <li class="submenu-item">
+                    <a href="../tiket/tiket.php">Tiket</a>
+                </li>
             </ul>
         </li>
+        <li
+            class="sidebar-item has-sub">
+            <a href="#" class='sidebar-link'>
+                <i class="fa fa-comment" aria-hidden="true"></i>
+                <span>Ulasan</span>
+            </a>
+            <ul class="submenu">
+                <li class="submenu-item">
+                    <a href="../ulasan/ulasan.php">kritik & saran</a>
+                </li>
+            </ul>
         </ul>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>

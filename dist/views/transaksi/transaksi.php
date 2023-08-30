@@ -1,10 +1,19 @@
+<?php
+require '../../app/config.php';
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
+}
+
+$sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Pemandian</title>
+    <title>transaksi - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -13,6 +22,7 @@
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.png" type="image/png">
     
 <link rel="stylesheet" href="../../../public/assets/css/shared/iconly.css">
+<link rel="stylesheet" href="../../../public/assets/extensions/sweetalert2/sweetalert2.min.css">
 
 </head>
 
@@ -42,7 +52,7 @@
         <ul class="menu">
             <li class="sidebar-title">Menu</li>
             <li
-                class="sidebar-item active ">
+                class="sidebar-item">
                 <a href="../dashboard/dashboard.php" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
@@ -55,8 +65,8 @@
                 <span>Tiket</span>
             </a>
             <ul class="submenu">
-                <li class="submenu-item">
-                    <a href="../transaksi/transaksi.php">Transaksi</a>
+                <li class="submenu-item active">
+                    <a href="#">Transaksi</a>
                 </li>
                 <li class="submenu-item">
                     <a href="../tiket/tiket.php">Tiket</a>
@@ -103,124 +113,65 @@
             </header>
             
 <div class="page-heading">
-    <h3>Dashboard</h3>
+    <h3>Tiket - Transaksi</h3>
 </div>
 <div class="page-content">
     <section class="row">
-        <div class="col-12 col-lg-9">
-            <div class="row">
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon purple mb-2">
-                                        <i class="iconly-boldShow"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Profile Views</h6>
-                                    <h6 class="font-extrabold mb-0">112.000</h6>
-                                </div>
-                            </div>
-                        </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Tabel Transaksi</h4>
                     </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon blue mb-2">
-                                        <i class="iconly-boldProfile"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Followers</h6>
-                                    <h6 class="font-extrabold mb-0">183.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon green mb-2">
-                                        <i class="iconly-boldAdd-User"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Following</h6>
-                                    <h6 class="font-extrabold mb-0">80.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon red mb-2">
-                                        <i class="iconly-boldBookmark"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Saved Post</h6>
-                                    <h6 class="font-extrabold mb-0">112</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header">
-                            <h4>Pengunjung</h4>
-                        </div>
+                    <div class="card-content">
                         <div class="card-body">
-                            <div id="chart-profile-visit"></div>
+            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                        </div>
+
+                        <!-- Table with no outer spacing -->
+                        <div class="table-responsive">
+                            <table class="table mb-0 table-lg">
+                                <thead>
+                                    <tr>
+                                        <th>id_transaksi</th>
+                                        <th>id_user</th>
+                                        <th>id_tiket</th>
+   										<th>tgl_pemesanan</th>
+                                        <th>total_harga</th>
+                                        <th colspan="3" style="text-align: center;">action</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                <?php
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row["id_transaksi"] . "</td>";
+                                            echo "<td>" . $row["id_user"] . "</td>";
+                                            echo "<td>" . $row["id_tiket"] . "</td>";
+                                            echo "<td>" . $row["tgl_pemesanan"] . "</td>";
+                                            echo "<td>" . $row["total_harga"] . "</td>";
+                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-warning" href="../detail_transaksi/detail_transaksi.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-list"></i></a></td>';
+                                            echo "</tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='6'>Tidak ada data.</td></tr>";
+                                    }
+                                ?>
+
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-12 col-lg-3">
-            <div class="card">
-                <div class="card-body py-4 px-4">
-                    <div class="d-flex align-items-center">
-                        <div class="avatar avatar-xl">
-                            <img src="../../../public/assets/images/faces/1.jpg" alt="Face 1">
-                        </div>
-                        <div class="ms-3 name">
-                            <h5 class="font-bold">John Duck</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="card">
-                <div class="card-header">
-                    <h4>Usia Pengunjung</h4>
-                </div>
-                <div class="card-body">
-                    <div id="chart-visitors-profile"></div>
-                </div>
-            </div>
-        </div>
+            </div>        
     </section>
 </div>
 
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <p>2023 &copy; Pemandian</p>
+                        <p>2023 © Pemandian</p>
                     </div>
                 </div>
             </footer>
@@ -232,6 +183,8 @@
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
+<script src="../../../public/assets/extensions/sweetalert2/sweetalert2.min.js"></script>>
+<script src="../../../public/assets/js/pages/sweetalert2.js"></script>>
 
 </body>
 

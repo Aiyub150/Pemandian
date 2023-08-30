@@ -8,15 +8,13 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user = $_POST["id_user"];
-    $tiket = $_POST["id_tiket"];
-    $tgl_pemesanan = $_POST["tgl_pemesanan"];
-    $total_harga = $_POST["total_harga"];
+    $nama_tiket = $_POST["nama_tiket"]; 
+    $harga = $_POST["harga"];
 
-    $sql = "INSERT INTO transaksi (id_user, id_tiket, tgl_pemesanan, total_harga) VALUES ('$user', '$tiket', '$tgl_pemesanan', '$total_harga')";
+    $sql = "INSERT INTO tiket (nama_tiket, harga) VALUES ('$nama_tiket', '$harga')";
 
     if ($conn->query($sql) === true) {
-        header("location: transaksi.php");
+        header("location: tiket.php");
     } else {
         echo "Error: " . $sql . "<br>" . $conn->error;
     }
@@ -28,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>transaksi - Pemandian</title>
+    <title>tiket - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -73,17 +71,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </a>
             </li>
             <li
-            class="sidebar-item has-sub active">
+            class="sidebar-item has-sub">
             <a href="../dashboard/dashboard.html" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
             </a>
             <ul class="submenu">
+                <li class="submenu-item">
+                    <a href="../transaksi/transaksi.php">Transaksi</a>
+                </li>
                 <li class="submenu-item active">
-                    <a href="transaksi.php">Transaksi</a>
+                    <a href="tiket.php">Tiket</a>
                 </li>
             </ul>
         </li>
+        <li
+            class="sidebar-item has-sub">
+            <a href="#" class='sidebar-link'>
+                <i class="fa fa-comment" aria-hidden="true"></i>
+                <span>Ulasan</span>
+            </a>
+            <ul class="submenu">
+                <li class="submenu-item">
+                    <a href="../ulasan/ulasan.php">kritik & saran</a>
+                </li>
+            </ul>
         </ul>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
@@ -129,28 +141,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="form-body">
                           <div class="row">
                             <div class="col-md-4">
-                              <label for="email-horizontal">ID USER</label>
+                              <label for="email-horizontal">NAMA TIKET</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="email-horizontal" class="form-control" name="id_user" placeholder="id user">
+                              <input type="text" id="email-horizontal" class="form-control" name="nama_tiket" placeholder="nama tiket">
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">ID TIKET</label>
+                              <label for="contact-info-horizontal">HARGA TIKET</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="id_tiket" placeholder="id_tiket">
-                            </div>
-                            <div class="col-md-4">
-                              <label for="contact-info-horizontal">TANGGAL PEMESANAN</label>
-                            </div>
-                            <div class="col-md-8 form-group">
-                              <input type="date" id="contact-info-horizontal" class="form-control" name="tgl_pemesanan" placeholder="tanggal pemesanan">
-                            </div>
-                            <div class="col-md-4">
-                              <label for="contact-info-horizontal">TOTAL HARGA</label>
-                            </div>
-                            <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="total_harga" placeholder="total harga">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="harga" placeholder="harga tiket">
                             </div>
                             <div class="col-sm-12 d-flex justify-content-end">
                               <button type="submit" class="btn btn-primary me-1 mb-1">
@@ -159,7 +159,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               <button type="reset" class="btn btn-light-secondary me-1 mb-1">
                                 Reset
                               </button>
-                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='transaksi.php'">
+                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='tiket.php'">
                                     Kembali
                                 </button>
                             </div>
