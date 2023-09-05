@@ -1,8 +1,5 @@
 <?php
 require '../../app/config.php';
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
 
 $sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi";
 $result = $conn->query($sql);

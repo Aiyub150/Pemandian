@@ -73,7 +73,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="text-center mt-5 text-lg fs-4">
                 <p class="text-gray-600">Don't have an account? <a href="register.php" class="font-bold">Sign
                         up</a>.</p>
-                <p><a class="font-bold" href="forgot_password.html">Forgot password?</a>.</p>
+                <p><a class="font-bold" href="forgot_password.php">Forgot password?</a>.</p>
             </div>
         </div>
     </div>

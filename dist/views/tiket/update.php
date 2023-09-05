@@ -1,12 +1,6 @@
 <?php
 require '../../app/config.php';
 
-$conn = new mysqli('localhost', 'root', '', 'pemandian');
-
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
-
 $id_tiket = ""; // Inisialisasi nilai awal untuk id_transaksi
 
 if (isset($_GET["id"])) {

@@ -1,12 +1,6 @@
 <?php
 require '../../app/config.php';
 
-$conn = new mysqli('localhost', 'root', '', 'pemandian');
-
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama_tiket = $_POST["nama_tiket"]; 
     $harga = $_POST["harga"];

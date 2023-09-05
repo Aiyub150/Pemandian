@@ -1,8 +1,5 @@
 <?php
 require '../../app/config.php';
-if ($conn->connect_error) {
-    die("Koneksi gagal: " . $conn->connect_error);
-}
 
 $sql = "SELECT * FROM tiket";
 $result = $conn->query($sql);
