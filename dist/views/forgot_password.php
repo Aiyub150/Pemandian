@@ -39,9 +39,7 @@
         </div>
     </div>
     <div class="col-lg-7 d-none d-lg-block">
-        <div id="auth-right">
-
-        </div>
+    <img style="height: 100%;" src="../../public/img/background2.png" alt="">
     </div>
 </div>
 

@@ -1,7 +1,7 @@
 <?php
 require '../../app/config.php';
 
-$sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi";
+$sql = "SELECT id_detail_transaksi, id_transaksi, id_tiket FROM detail_transaksi";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -115,7 +115,7 @@ $result = $conn->query($sql);
     <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Tabel Transaksi</h4>
+                        <h4 class="card-title">Detail Transaksi </h4>
                     </div>
                     <div class="card-content">
                         <div class="card-body">
@@ -127,11 +127,9 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg">
                                 <thead>
                                     <tr>
-                                        <th>id_transaksi</th>
-                                        <th>id_user</th>
+                                        <th>id_detail_transaksi</th>
+                                        <th>id_transaksi</th>              
                                         <th>id_tiket</th>
-   										<th>tgl_pemesanan</th>
-                                        <th>total_harga</th>
                                         <th colspan="2">action</th>
                                     </tr>
                                 </thead>
@@ -140,17 +138,15 @@ $result = $conn->query($sql);
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
+                                            echo "<td>" . $row["id_detail_transaksi"] . "</td>";
                                             echo "<td>" . $row["id_transaksi"] . "</td>";
-                                            echo "<td>" . $row["id_user"] . "</td>";
                                             echo "<td>" . $row["id_tiket"] . "</td>";
-                                            echo "<td>" . $row["tgl_pemesanan"] . "</td>";
-                                            echo "<td>" . $row["total_harga"] . "</td>";
-                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_detail_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_detail_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='6'>Tidak ada data.</td></tr>";
+                                        echo "<tr><td colspan='5'>Tidak ada data.</td></tr>";
                                     }
                                 ?>
 
