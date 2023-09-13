@@ -11,6 +11,9 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>transaksi - Pemandian</title>
+    <script src="../../../public/js/exportToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="../../../public/js/exportToPDF.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -121,11 +124,13 @@ $result = $conn->query($sql);
                     <div class="card-content">
                         <div class="card-body">
             <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+            <button onclick="exportToExcel('dataTable', 'data')" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
+            <button onclick="exportToPDF('dataTable', 'data')" class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
                         </div>
 
                         <!-- Table with no outer spacing -->
                         <div class="table-responsive">
-                            <table class="table mb-0 table-lg">
+                            <table class="table mb-0 table-lg" id="dataTable">
                                 <thead>
                                     <tr>
                                         <th>id_transaksi</th>

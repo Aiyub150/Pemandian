@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <!-- Masthead-->
         <header class="masthead">
             <div class="container">
-                <div class="masthead-heading text-uppercase">Selamat Datang Di Pemandian Patemon Tanggul</div>
+                <div class="masthead-heading text-uppercase">Selamat Datang Di Pemandian</div>
                 <div class="masthead-subheading">Pengalaman Pemandian yang Tidak Terlupakan</div>
                 <a class="btn btn-primary btn-xl text-uppercase" href="register.php">Daftar Sekarang</a>
             </div>
