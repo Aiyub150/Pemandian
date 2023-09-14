@@ -108,7 +108,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="text-center">
                     <h2 class="section-heading text-uppercase">Gallery</h2>
-                    <h3 class="section-subheading text-muted">Lorem ipsum dolor sit amet consectetur.</h3>
+                    <h3 class="section-subheading text-muted">Momen Momen Indah Di Pemandian Kami.</h3>
                 </div>
                 <div class="row">
                     <div class="col-lg-4 col-sm-6 mb-4">
@@ -116,7 +116,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal1">
                                 <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                    <div class="portfolio-hover-content"><i class="fa fa-search-plus fa-3x" aria-hidden="true"></i></div>
                                 </div>
                                 <img class="img-fluid" src="../../public/img/gambar.png" alt="..." />
                             </a>
@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal2">
                                 <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                    <div class="portfolio-hover-content"><i class="fa fa-search-plus fa-3x" aria-hidden="true"></i></div>
                                 </div>
                                 <img class="img-fluid" src="../../public/img/gambar2.png" alt="..." />
                             </a>
@@ -146,7 +146,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal3">
                                 <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                    <div class="portfolio-hover-content"><i class="fa fa-search-plus fa-3x" aria-hidden="true"></i></div>
                                 </div>
                                 <img class="img-fluid" src="../../public/img/gambar3.png" alt="..." />
                             </a>
@@ -161,13 +161,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal4">
                                 <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                    <div class="portfolio-hover-content"><i class="fa fa-search-plus fa-3x" aria-hidden="true"></i></div>
                                 </div>
-                                <img class="img-fluid" src="../../public/img/gambar4.png" alt="..." />
+                                <img class="img-fluid" src="../../public/img/gambar6.png" alt="..." />
                             </a>
                             <div class="portfolio-caption">
-                                <div class="portfolio-caption-heading">Lines</div>
-                                <div class="portfolio-caption-subheading text-muted">Branding</div>
+                                <div class="portfolio-caption-heading">Yonif Raider 515</div>
+                                <div class="portfolio-caption-subheading text-muted">meriahkan hut tni ke 72 yonif raider 515 kostrad karya bhakti di wisata pemandian patemon</div>
                             </div>
                         </div>
                     </div>
@@ -176,13 +176,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal5">
                                 <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                    <div class="portfolio-hover-content"><i class="fa fa-search-plus fa-3x" aria-hidden="true"></i></div>
                                 </div>
-                                <img class="img-fluid" src="../../public/img/gambar5.png" alt="..." />
+                                <img class="img-fluid" src="../../public/img/gambar7.png" alt="..." />
                             </a>
                             <div class="portfolio-caption">
-                                <div class="portfolio-caption-heading">Southwest</div>
-                                <div class="portfolio-caption-subheading text-muted">Website Design</div>
+                                <div class="portfolio-caption-heading">Ir. H. Hendy Siswanto, ST. IPU</div>
+                                <div class="portfolio-caption-subheading text-muted">Bupati Jember Ir. H. Hendy Siswanto, ST. IPU Mengunjungi Pemandian Patemon Di Tanggul Jember</div>
                             </div>
                         </div>
                     </div>
@@ -191,13 +191,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal6">
                                 <div class="portfolio-hover">
-                                    <div class="portfolio-hover-content"><i class="fas fa-plus fa-3x"></i></div>
+                                    <div class="portfolio-hover-content"><i class="fa fa-search-plus fa-3x" aria-hidden="true"></i></div>
                                 </div>
-                                <img class="img-fluid" src="../../public/img/gambar.png" alt="..." />
+                                <img class="img-fluid" src="../../public/img/gambar9.png" alt="..." />
                             </a>
                             <div class="portfolio-caption">
-                                <div class="portfolio-caption-heading">Window</div>
-                                <div class="portfolio-caption-subheading text-muted">Photography</div>
+                                <div class="portfolio-caption-heading">Momen Pemandian Terpadat</div>
+                                <div class="portfolio-caption-subheading text-muted">Ribuan pengunjung padati pemandian</div>
                             </div>
                         </div>
                     </div>
@@ -416,7 +416,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="close-modal" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true" style="width: 50px; height: 50px;"></i></div>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
@@ -424,7 +424,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <!-- Project details-->
                                     <h2 class="text-uppercase">Project Name</h2>
                                     <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/1.jpg" alt="..." />
+                                    <img class="img-fluid d-block mx-auto" src="../../public/img/gambar.png" alt="..." />
                                     <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
                                     <ul class="list-inline">
                                         <li>
@@ -451,7 +451,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="close-modal" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true" style="width: 50px; height: 50px;"></i></div>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
@@ -459,7 +459,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <!-- Project details-->
                                     <h2 class="text-uppercase">Project Name</h2>
                                     <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/2.jpg" alt="..." />
+                                    <img class="img-fluid d-block mx-auto" src="../../public/img/gambar2.png" alt="..." />
                                     <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
                                     <ul class="list-inline">
                                         <li>
@@ -486,7 +486,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="close-modal" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true" style="width: 50px; height: 50px;"></i></div>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
@@ -494,7 +494,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <!-- Project details-->
                                     <h2 class="text-uppercase">Project Name</h2>
                                     <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/3.jpg" alt="..." />
+                                    <img class="img-fluid d-block mx-auto" src="../../public/img/gambar3.png" alt="..." />
                                     <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
                                     <ul class="list-inline">
                                         <li>
@@ -521,26 +521,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="close-modal" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true" style="width: 50px; height: 50px;"></i></div>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
                                 <div class="modal-body">
                                     <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/4.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Lines
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Branding
-                                        </li>
-                                    </ul>
+                                    <h2 class="text-uppercase">Yonif Raider 515</h2>
+                                    <p class="item-intro text-muted">meriahkan hut tni ke 72 yonif raider 515 kostrad karya bhakti di wisata pemandian patemon.</p>
+                                    <img class="img-fluid d-block mx-auto" src="../../public/img/gambar6.png" alt="..." />
+                                    <p>Dalam rangka memperingati Hari Ulang Tahun   ke-72 TNI tahun 2017 banyak kegiatan yang dilaksanakan oleh satuan-satuan TNI seluruh Indonesia. Tidak mau ketinggalan Yonif  Raider 515/UTY ikut serta memeriahkan HUT TNI ke 72 kali ini dengan mengadakan Karya Bhakti di sekitar satuan. Tanggul – Jember, Rabu (27/09/2017).</p>
                                     <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
                                         Close Project
@@ -556,26 +546,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="close-modal" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true" style="width: 50px; height: 50px;"></i></div>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
                                 <div class="modal-body">
                                     <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/5.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Southwest
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Website Design
-                                        </li>
-                                    </ul>
+                                    <h2 class="text-uppercase">Ir. H. Hendy Siswanto, ST. IPU</h2>
+                                    <p class="item-intro text-muted">Bupati Jember Ir. H. Hendy Siswanto, ST. IPU Mengunjungi Pemandian Patemon Di Tanggul Jember.</p>
+                                    <img class="img-fluid d-block mx-auto" src="../../public/img/gambar8.png" alt="..." />
+                                    <p>Bupati Jember Ir. H. Hendy Siswanto, ST. IPU. mengunjungi Pemandian Patemon di Tanggul Jember, Senin (21/02/2022). Pemandian Patemon merupakan taman rekreasi keluarga milik Pemkab Jember. Di sana Bupati Hendy Siswanto didampingi Kepala Disparbud dan Kepala BPKAD Jember meninjau aset yang sudah lama tanpa pemeliharaan tersebut.</p>
                                     <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
                                         Close Project
@@ -591,26 +571,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="close-modal" data-bs-dismiss="modal"><img src="assets/img/close-icon.svg" alt="Close modal" /></div>
+                    <div class="close-modal" data-bs-dismiss="modal"><i class="fa fa-times-circle" aria-hidden="true" style="width: 50px; height: 50px;"></i></div>
                     <div class="container">
                         <div class="row justify-content-center">
                             <div class="col-lg-8">
                                 <div class="modal-body">
                                     <!-- Project details-->
-                                    <h2 class="text-uppercase">Project Name</h2>
-                                    <p class="item-intro text-muted">Lorem ipsum dolor sit amet consectetur.</p>
-                                    <img class="img-fluid d-block mx-auto" src="assets/img/portfolio/6.jpg" alt="..." />
-                                    <p>Use this area to describe your project. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Est blanditiis dolorem culpa incidunt minus dignissimos deserunt repellat aperiam quasi sunt officia expedita beatae cupiditate, maiores repudiandae, nostrum, reiciendis facere nemo!</p>
-                                    <ul class="list-inline">
-                                        <li>
-                                            <strong>Client:</strong>
-                                            Window
-                                        </li>
-                                        <li>
-                                            <strong>Category:</strong>
-                                            Photography
-                                        </li>
-                                    </ul>
+                                    <h2 class="text-uppercase">Momen Terpadat Di Pemandian</h2>
+                                    <p class="item-intro text-muted">Ribuan pengunjung padati pemandian.</p>
+                                    <img class="img-fluid d-block mx-auto" src="../../public/img/gambar9.png" alt="..." />
+                                    <p>Ribuan pengunjung padati kolam pemandian Patemon, Kecamatan Tanggul, Kabupaten Jember, Minggu (11-8-2013). Libur lebaran dimanfaatkan warga untuk berlibur bersama keluarga.</p>
                                     <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
                                         Close Project

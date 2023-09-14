@@ -14,8 +14,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows == 1) {
-        $_SESSION['username'] = $username;
+        if($_SESSION['username'] = $username){
         header("location: dashboard/dashboard.php"); 
+        }
     } else {
         $error = "Username atau password salah.";
     }
@@ -32,8 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login - Pemandian</title>
     <link rel="stylesheet" href="../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../public/assets/css/pages/auth.css">
-    <link rel="shortcut icon" href="../../public/assets/images/logo/favicon.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="../../public/assets/images/logo/favicon.png" type="image/png">
+    <link rel="icon" type="image/x-icon" href="../../public/img/icon.png" />
 </head>
 
 <body>
@@ -46,7 +46,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="index.php"><img src="../../public/img/logo_pemandian_transparant.png" alt="Logo" style="width: 200px; height: 50px;"></a>
             </div>
             <h1 class="auth-title">Log in.</h1>
-            <p class="auth-subtitle mb-5">Log in with your data that you entered during registration.</p>
+            <p class="auth-subtitle mb-5">Silahkan login sesuai dengan akun anda yang sudah terdaftar</p>
 
             <form method="post" action="">
                 <div class="form-group position-relative has-icon-left mb-4">
@@ -71,9 +71,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
             <?php if (isset($error)) { echo $error; } ?> 
             <div class="text-center mt-5 text-lg fs-4">
-                <p class="text-gray-600">Don't have an account? <a href="register.php" class="font-bold">Sign
-                        up</a>.</p>
-                <p><a class="font-bold" href="forgot_password.php">Forgot password?</a>.</p>
+                <p class="text-gray-600">Belum mempunyai akun? <a href="register.php" class="font-bold">Daftar Sekarang</a>.</p>
+                <p><a class="font-bold" href="forgot_password.php">Lupa Password?</a>.</p>
             </div>
         </div>
     </div>

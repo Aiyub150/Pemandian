@@ -28,8 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login - Pemandian</title>
     <link rel="stylesheet" href="../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../public/assets/css/pages/auth.css">
-    <link rel="shortcut icon" href="../../public/assets/images/logo/favicon.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="../../public/assets/images/logo/favicon.png" type="image/png">
+    <link rel="icon" type="image/x-icon" href="../../public/img/icon.png" />
 </head>
 
 <body>
@@ -43,8 +42,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="auth-logo">
                 <a href="index.php"><img src="../../public/img/logo_pemandian_transparant.png" alt="Logo" style="width: 200px; height: 50px;"></a>
             </div>
-            <h1 class="auth-title">Sign Up</h1>
-            <p class="auth-subtitle mb-5">Input your data to register to our website.</p>
+            <h1 class="auth-title">Daftar</h1>
+            <p class="auth-subtitle mb-5">Silahkan untuk mendaftarkan data anda dan pastikan data yang anda masukkan sudah benar.</p>
             
             <form method="post" action="">
                 <div class="form-group position-relative has-icon-left mb-4">
@@ -71,11 +70,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <i class="bi bi-shield-lock"></i>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Sign Up</button>
+                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Daftar</button>
             </form>        
             <?php if (isset($error)) { echo $error; } ?>            
             <div class="text-center mt-5 text-lg fs-4">
-                <p class='text-gray-600'>Already have an account? <a href="login.php" class="font-bold">Log
+                <p class='text-gray-600'>Sudah mempunyai akun? <a href="login.php" class="font-bold">Log
                         in</a>.</p>
             </div>
         </div>

@@ -7,8 +7,7 @@
     <title>Login - Pemandian</title>
     <link rel="stylesheet" href="../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../public/assets/css/pages/auth.css">
-    <link rel="shortcut icon" href="../../public/assets/images/logo/favicon.svg" type="image/x-icon">
-    <link rel="shortcut icon" href="../../public/assets/images/logo/favicon.png" type="image/png">
+    <link rel="icon" type="image/x-icon" href="../../public/img/icon.png" />
 </head>
 
 <body>
@@ -20,8 +19,8 @@
         <div class="auth-logo">
                 <a href="index.php"><img src="../../public/img/logo_pemandian_transparant.png" alt="Logo" style="width: 200px; height: 50px;"></a>
             </div>
-            <h1 class="auth-title">Forgot Password</h1>
-            <p class="auth-subtitle mb-5">Input your email and we will send you reset password link.</p>
+            <h1 class="auth-title">Lupa Password</h1>
+            <p class="auth-subtitle mb-5">Silahkan masukkan email anda dan kami akan mengirimkan link reset password ke email anda.</p>
 
             <form action="index.html">
                 <div class="form-group position-relative has-icon-left mb-4">
@@ -30,10 +29,10 @@
                         <i class="bi bi-envelope"></i>
                     </div>
                 </div>
-                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Send</button>
+                <button class="btn btn-primary btn-block btn-lg shadow-lg mt-5">Kirim</button>
             </form>
             <div class="text-center mt-5 text-lg fs-4">
-                <p class='text-gray-600'>Remember your account? <a href="login.php" class="font-bold">Log in</a>.
+                <p class='text-gray-600'>Sudah ingat dengan akun anda? <a href="login.php" class="font-bold">Log in</a>.
                 </p>
             </div>
         </div>
