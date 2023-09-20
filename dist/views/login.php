@@ -2,7 +2,25 @@
 require '../app/config.php';
 session_start();
 
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Secret Key ini kita ambil dari halaman Google reCaptcha
+    // Sesuai pada catatan saya di STEP 1 nomor 6
+    $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
+    // Disini kita akan melakukan komunkasi dengan google recpatcha
+    // dengan mengirimkan scret key dan hasil dari response recaptcha nya
+    $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['g-recaptcha-response']);
+    $response = json_decode($verify);
+    if($response->success){ // Jika proses validasi captcha berhasil
+      echo "<h2>Captcha Valid</h2>";
+      echo "Yes, you're human (Anda adalah manusia)<hr>";
+      echo "<b>Nama :</b><br>".$_POST['username']."<br><br>";
+      echo "<b>Email :</b><br>".$_POST['password']."<br><br>";  
+    }else{ // Jika captcha tidak valid
+      echo "<h2>Captcha Tidak Valid</h2>";
+      echo "Ohh sorry, you're not human (Anda bukan manusia)<hr>";
+      echo "Silahkan klik kotak I'm not robot (reCaptcha) untuk verifikasi";
+    }
     $username = $_POST['username'];
     $password = $_POST['password'];
 
@@ -68,7 +86,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <span>Atau Login Dengan Email</span>
       </div>
 
-      <form method="post" action="">
+      <form method="post" action="" id="form">
         <div class="login-form-group">
             <label for="email">Email / Username<span class="required-star">*</span></label>
             <input type="text" placeholder="Masukkan username atau email anda" id="email" name="username" required>
@@ -77,8 +95,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="pwd">Password <span class="required-star">*</span></label>
             <input autocomplete="off" type="password" placeholder="Minimum 8 characters" id="pwd" name="password" required>
         </div>
-        <div class="g-recaptcha" data-sitekey="6LcPXTsoAAAAAIilinMr66sWbdyBnpuC-SFUopQx"></div>
-        <input class="rounded-button login-cta" type="submit" name="submit">Login</input>
+        <button class="rounded-button login-cta g-recaptcha" type="submit"
+        data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
+        data-callback='onSubmit' 
+        data-action='submit'>Login</button>
       </form>
       <?php if (isset($error)) { echo $error; } ?>
       <div class="login-form-group single-row">
@@ -97,6 +117,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </div>
 <script src='https://www.google.com/recaptcha/api.js'></script>
+<script>
+   function onSubmit(token) {
+     document.getElementById("form").submit();
+   }
+ </script>
 </body>
 
 </html>
