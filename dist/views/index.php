@@ -6,21 +6,51 @@
 <?php
 require '../app/config.php';
 
+if ($conn->connect_error) {
+    die("Koneksi gagal: " . $conn->connect_error);
+}
+
+// Ambil data dari formulir
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user = $_POST["id_user"];
-    $rating = $_POST["rating"];
-    $ulasan = $_POST["ulasan"];
-    $tgl_ulasan = $_POST["tgl_ulasan"];
+    $username = $conn->real_escape_string($_POST["username"]);
+    $email = $conn->real_escape_string($_POST["email"]);
+    $no_telepon = $conn->real_escape_string($_POST["no_telepon"]);
+    $ulasan = $conn->real_escape_string($_POST["ulasan"]);
+    $tgl_ulasan = date("Y-m-d");
 
-    $sql = "INSERT INTO ulasan (id_user, rating, ulasan, tgl_ulasan) VALUES ('$user', '$rating', '$ulasan', '$tgl_ulasan')";
+    // Periksa apakah data user sudah ada di tabel user
+    $sql_check_user = "SELECT id_user FROM users WHERE username='$username' AND email='$email' AND no_telepon='$no_telepon'";
+    $result = $conn->query($sql_check_user);
 
-    if ($conn->query($sql) === true) {
-        header("location: index.php");
+    if ($result) {
+        if ($result->num_rows > 0) {
+            // Jika data user sudah ada, ambil ID user
+            $row = $result->fetch_assoc();
+            $id_user = $row["id_user"];
+        } else {
+            // Jika data user belum ada, tambahkan ke tabel user
+            $sql_insert_user = "INSERT INTO users (username, email, no_telepon) VALUES ('$username', '$email', '$no_telepon')";
+            if ($conn->query($sql_insert_user)) {
+                $id_user = $conn->insert_id;
+            } else {
+                echo "Error: " . $sql_insert_user . "<br>" . $conn->error;
+            }
+        }
+
+        // Tambahkan ulasan ke tabel ulasan
+        $sql_insert_ulasan = "INSERT INTO ulasan (id_user, ulasan, tgl_ulasan) VALUES ('$id_user', '$ulasan', '$tgl_ulasan')";
+        if ($conn->query($sql_insert_ulasan)) {
+            echo "Ulasan berhasil disimpan.";
+        } else {
+            echo "Error: " . $sql_insert_ulasan . "<br>" . $conn->error;
+        }
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $sql_check_user . "<br>" . $conn->error;
     }
 }
+$conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -65,7 +95,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="container">
                 <div class="masthead-heading text-uppercase">Selamat Datang Di Pemandian</div>
                 <div class="masthead-subheading">Pengalaman Pemandian yang Tidak Terlupakan</div>
-                <a class="btn btn-primary btn-xl text-uppercase" href="register.php">Daftar Sekarang</a>
+                <a class="btn btn-warning btn-xl text-uppercase" href="register.php">Daftar Sekarang</a>
             </div>
         </header>
         <!-- Services-->
@@ -111,8 +141,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h3 class="section-subheading text-muted">Momen Momen Indah Di Pemandian Kami.</h3>
                 </div>
                 <div class="row">
-                    <div class="col-lg-4 col-sm-6 mb-4">
-                        <!-- Portfolio item 1-->
+                    <!-- <div class="col-lg-4 col-sm-6 mb-4">
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal1">
                                 <div class="portfolio-hover">
@@ -127,7 +156,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-6 mb-4">
-                        <!-- Portfolio item 2-->
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal2">
                                 <div class="portfolio-hover">
@@ -142,7 +170,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-6 mb-4">
-                        <!-- Portfolio item 3-->
                         <div class="portfolio-item">
                             <a class="portfolio-link" data-bs-toggle="modal" href="#portfolioModal3">
                                 <div class="portfolio-hover">
@@ -155,7 +182,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="portfolio-caption-subheading text-muted">Identity</div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="col-lg-4 col-sm-6 mb-4 mb-lg-0">
                         <!-- Portfolio item 4-->
                         <div class="portfolio-item">
@@ -258,7 +285,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <h4>
                                 Pesan
                                 <br />
-                                Sekarang
+                                Sekarang Disini.
                                 <br />
                             </h4>
                             </a>
@@ -331,7 +358,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
         </div>
         <!-- Contact-->
-        <section class="page-section" id="contact">
+        <section class="page-section" id="contact" method="post">
             <div class="container">
                 <div class="text-center">
                     <h2 class="section-heading text-uppercase">Kritik & Saran</h2>
@@ -349,7 +376,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="col-md-6">
                             <div class="form-group">
                                 <!-- Name input-->
-                                <input class="form-control" id="name" name="nama" type="text" placeholder="Nama Anda *" data-sb-validations="required" />
+                                <input class="form-control" id="name" name="username" type="text" placeholder="Nama Anda *" data-sb-validations="required" />
                                 <div class="invalid-feedback" data-sb-feedback="name:required">Nama diperlukan</div>
                             </div>
                             <div class="form-group">
@@ -367,7 +394,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="col-md-6">
                             <div class="form-group form-group-textarea mb-md-0">
                                 <!-- Message input-->
-                                <textarea class="form-control" id="message" placeholder="Kritik & Saran *" data-sb-validations="required"></textarea>
+                                <textarea class="form-control" name="ulasan" id="message" placeholder="Kritik & Saran *" data-sb-validations="required"></textarea>
                                 <div class="invalid-feedback" data-sb-feedback="message:required">Berikan kritik dan saran sesuai dengan pengalaman anda di pemandian kami.</div>
                             </div>
                         </div>
@@ -378,10 +405,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <!-- has successfully submitted-->
                     <div class="d-none" id="submitSuccessMessage">
                         <div class="text-center text-white mb-3">
-                            <div class="fw-bolder">Form submission successful!</div>
-                            To activate this form, sign up at
+                            <div class="fw-bolder">Kritik Dan Saran Anda Berhasil Dikirim!</div>
+                            Untuk informasi lebih lanjut anda bisa menghubungi kami melalui link dibawah ini
                             <br />
-                            <a href="https://startbootstrap.com/solution/contact-forms">https://startbootstrap.com/solution/contact-forms</a>
+                            <a href="https://www.youtube.com/channel/UC0zCg-hXAFtmSsve6rw4GoA">Hubungi Kami Disini  </a>
                         </div>
                     </div>
                     <!-- Submit error message-->
@@ -390,7 +417,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <!-- an error submitting the form-->
                     <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                     <!-- Submit Button-->
-                    <div class="text-center"><button class="btn btn-primary btn-xl text-uppercase disabled" id="submitButton" type="submit">Kirim</button></div>
+                    <div class="text-center"><button class="btn btn-warning btn-xl text-uppercase disabled" id="submitButton" type="submit">Kirim</button></div>
                 </form>
             </div>
         </section>
@@ -436,9 +463,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             Illustration
                                         </li>
                                     </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-warning btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
-                                        Close Project
+                                        Tutup
                                     </button>
                                 </div>
                             </div>
@@ -471,9 +498,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             Graphic Design
                                         </li>
                                     </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-warning btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
-                                        Close Project
+                                        Tutup
                                     </button>
                                 </div>
                             </div>
@@ -506,9 +533,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                             Identity
                                         </li>
                                     </ul>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-warning btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
-                                        Close Project
+                                        Tutup
                                     </button>
                                 </div>
                             </div>
@@ -531,9 +558,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <p class="item-intro text-muted">meriahkan hut tni ke 72 yonif raider 515 kostrad karya bhakti di wisata pemandian patemon.</p>
                                     <img class="img-fluid d-block mx-auto" src="../../public/img/gambar6.png" alt="..." />
                                     <p>Dalam rangka memperingati Hari Ulang Tahun   ke-72 TNI tahun 2017 banyak kegiatan yang dilaksanakan oleh satuan-satuan TNI seluruh Indonesia. Tidak mau ketinggalan Yonif  Raider 515/UTY ikut serta memeriahkan HUT TNI ke 72 kali ini dengan mengadakan Karya Bhakti di sekitar satuan. Tanggul – Jember, Rabu (27/09/2017).</p>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-warning btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
-                                        Close Project
+                                        Tutup
                                     </button>
                                 </div>
                             </div>
@@ -556,9 +583,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <p class="item-intro text-muted">Bupati Jember Ir. H. Hendy Siswanto, ST. IPU Mengunjungi Pemandian Patemon Di Tanggul Jember.</p>
                                     <img class="img-fluid d-block mx-auto" src="../../public/img/gambar8.png" alt="..." />
                                     <p>Bupati Jember Ir. H. Hendy Siswanto, ST. IPU. mengunjungi Pemandian Patemon di Tanggul Jember, Senin (21/02/2022). Pemandian Patemon merupakan taman rekreasi keluarga milik Pemkab Jember. Di sana Bupati Hendy Siswanto didampingi Kepala Disparbud dan Kepala BPKAD Jember meninjau aset yang sudah lama tanpa pemeliharaan tersebut.</p>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-warning btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
-                                        Close Project
+                                        Tutup
                                     </button>
                                 </div>
                             </div>
@@ -581,9 +608,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <p class="item-intro text-muted">Ribuan pengunjung padati pemandian.</p>
                                     <img class="img-fluid d-block mx-auto" src="../../public/img/gambar9.png" alt="..." />
                                     <p>Ribuan pengunjung padati kolam pemandian Patemon, Kecamatan Tanggul, Kabupaten Jember, Minggu (11-8-2013). Libur lebaran dimanfaatkan warga untuk berlibur bersama keluarga.</p>
-                                    <button class="btn btn-primary btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
+                                    <button class="btn btn-warning btn-xl text-uppercase" data-bs-dismiss="modal" type="button">
                                         <i class="fas fa-xmark me-1"></i>
-                                        Close Project
+                                        Tutup
                                     </button>
                                 </div>
                             </div>

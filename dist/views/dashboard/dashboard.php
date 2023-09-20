@@ -1,3 +1,10 @@
+<?php 
+session_start();
+if (isset($_SESSION['level']) != '1') {
+    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,6 +24,8 @@
 </head>
 
 <body>
+<img src="assets/images/svg-loaders/ball-triangle.svg" class="me-4" style="width: 3rem"
+                            alt="audio">
     <div id="app">
         <div id="sidebar" class="active">
             <div class="sidebar-wrapper active">
@@ -86,7 +95,7 @@
             </li>
             <li 
                 class="sidebar-item">
-                <a href="../login.php" class='sidebar-link'>
+                <a href="../logout.php" class='sidebar-link'>
                     <i class="bi bi-door-open"></i>
                     <span>Logout</span>
                 </a>
@@ -199,8 +208,8 @@
                             <img src="../../../public/assets/images/faces/1.jpg" alt="Face 1">
                         </div>
                         <div class="ms-3 name">
-                            <h5 class="font-bold">John Duck</h5>
-                            <h6 class="text-muted mb-0">@johnducky</h6>
+                            <h5 class="font-bold"><?= $_SESSION['username'] ?></h5>
+                            <h6 class="text-muted mb-0">Level <?= $_SESSION['level'] ?></h6>
                         </div>
                     </div>
                 </div>

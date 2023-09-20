@@ -5,10 +5,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
     $email = $_POST['email'];
+    $no_telepon = $_POST['no_telepon'];
 
     // Membuat prepared statement
-    $stmt = $conn->prepare("INSERT INTO users (username, password, email) VALUES (?, ?, ?)");
-    $stmt->bind_param("sss", $username, $password, $email);
+    $stmt = $conn->prepare("INSERT INTO users (username, password, email, no_telepon) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss",  $username, $password, $email, $no_telepon);
 
     if ($stmt->execute()) {
         header("location: login.php");
@@ -47,15 +48,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             <form method="post" action="">
                 <div class="form-group position-relative has-icon-left mb-4">
+                    <input type="text" name="username" class="form-control form-control-xl" placeholder="Username"  required>
+                    <div class="form-control-icon">
+                        <i class="bi bi-person"></i>
+                    </div>
+                </div>
+                <div class="form-group position-relative has-icon-left mb-4">
                     <input type="text" name="email" class="form-control form-control-xl" placeholder="Email"  required>
                     <div class="form-control-icon">
                         <i class="bi bi-envelope"></i>
                     </div>
                 </div>
                 <div class="form-group position-relative has-icon-left mb-4">
-                    <input type="text" name="username" class="form-control form-control-xl" placeholder="Username"  required>
+                    <input type="text" name="no_telepon" class="form-control form-control-xl" placeholder="No Telepon"  required>
                     <div class="form-control-icon">
-                        <i class="bi bi-person"></i>
+                        <i class="bi bi-phone"></i>
                     </div>
                 </div>
                 <div class="form-group position-relative has-icon-left mb-4">

@@ -1,6 +1,13 @@
 <?php
 require '../../app/config.php';
 
+session_start();
+
+if (!isset($_SESSION['id_user']) || !isset($_SESSION['level']) != '1') {
+    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
+    exit();
+}
+
 $sql = "SELECT id_detail_transaksi, id_transaksi, id_tiket FROM detail_transaksi";
 $result = $conn->query($sql);
 ?>
