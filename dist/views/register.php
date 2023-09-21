@@ -8,6 +8,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $no_telepon = $_POST['no_telepon'];
 
     // Membuat prepared statement
+    $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
+    $response = json_decode($verify);
     $stmt = $conn->prepare("INSERT INTO users (username, password, email, no_telepon) VALUES (?, ?, ?, ?)");
     $stmt->bind_param("ssss",  $username, $password, $email, $no_telepon);
 
@@ -75,6 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="pwd">Confirm Password <span class="required-star">*</span></label>
             <input autocomplete="off" type="password" placeholder="Minimum 8 characters" id="pwd" name="password" required>
         </div>
+        <input type="hidden" name="token" id="token">
         <button class="rounded-button login-cta g-recaptcha" type="submit"
         data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
         data-callback='onSubmit' 
@@ -124,10 +127,11 @@ viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
   </div>
   </div>
 </div>
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<script src='https://www.google.com/recaptcha/api.js?render=6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2'></script>
 <script>
    function onSubmit(token) {
-     document.getElementById("form").submit();
+    document.getElementById("token").value = token;
+    document.getElementById("form").submit();
    }
  </script>
 </body>
