@@ -9,23 +9,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
     // Disini kita akan melakukan komunkasi dengan google recpatcha
     // dengan mengirimkan scret key dan hasil dari response recaptcha nya
-    $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['g-recaptcha-response']);
+    $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
     $response = json_decode($verify);
-    if($response->success){ // Jika proses validasi captcha berhasil
-      echo "<h2>Captcha Valid</h2>";
-      echo "Yes, you're human (Anda adalah manusia)<hr>";
-      echo "<b>Nama :</b><br>".$_POST['username']."<br><br>";
-      echo "<b>Email :</b><br>".$_POST['password']."<br><br>";  
-    }else{ // Jika captcha tidak valid
-      echo "<h2>Captcha Tidak Valid</h2>";
-      echo "Ohh sorry, you're not human (Anda bukan manusia)<hr>";
-      echo "Silahkan klik kotak I'm not robot (reCaptcha) untuk verifikasi";
-    }
     $username = $_POST['username'];
     $password = $_POST['password'];
 
     // Membuat prepared statementecho 
-    $query = "SELECT * FROM users WHERE username='$username' AND password='$password'";
+    $query = "SELECT * FROM users WHERE (username='$username' OR email='$username') AND password='$password'";
     $result = mysqli_query($conn, $query);
     $d = mysqli_fetch_assoc($result);
     
@@ -42,10 +32,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         exit();
     } else {
-        $error = "Username atau password yang anda masukkan salah.";
+        $error = "<p style='color: red;'>Username atau password yang anda masukkan salah<p>";
     }
-
-    $stmt->close();
 }
 ?>
 
@@ -57,7 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Pemandian</title>
     <link rel="stylesheet" href="../../public/css/auth.css">
+    <link rel="stylesheet" href="../../public/css/waves.css">
     <link rel="icon" type="image/x-icon" href="../../public/img/icon.png" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
 </head>
 
 <body>
@@ -95,33 +85,71 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="pwd">Password <span class="required-star">*</span></label>
             <input autocomplete="off" type="password" placeholder="Minimum 8 characters" id="pwd" name="password" required>
         </div>
+        <?php if (isset($error)) { echo $error; } ?>
+        <input type="hidden" name="token" id="token">
         <button class="rounded-button login-cta g-recaptcha" type="submit"
         data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
         data-callback='onSubmit' 
         data-action='submit'>Login</button>
       </form>
-      <?php if (isset($error)) { echo $error; } ?>
+
       <div class="login-form-group single-row">
             <div class="custom-check">
             <input autocomplete="off" type="checkbox" checked id="remember"><label for="remember">Remember me</label>
             </div>
 
-            <a href="#" class="link forgot-link">Forgot Password ?</a>
-        </div>
+            <a href="forgot_password.php" class="link forgot-link">Forgot Password ?</a>
+        </div>        
       <div class="register-div">Belum mempunyai akun? <a href="register.php" class="link create-account" -link>Buat Akun Baru</a></div>
     </div>
 
   </div>
   <div class="onboarding">
-    
+  <!--Hey! This is the original version
+of Simple CSS Waves-->
+
+<div class="header">
+
+<!--Content before waves-->
+<div class="inner-header flex">
+<!--Just the logo.. Don't mind this-->
+
+</div>
+
+<!--Waves Container-->
+<div>
+<svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+<defs>
+<path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+</defs>
+<g class="parallax">
+<use xlink:href="#gentle-wave" x="48" y="0" fill="rgba(255,255,255,0.7" />
+<use xlink:href="#gentle-wave" x="48" y="3" fill="rgba(255,255,255,0.5)" />
+<use xlink:href="#gentle-wave" x="48" y="5" fill="rgba(255,255,255,0.3)" />
+<use xlink:href="#gentle-wave" x="48" y="7" fill="#fff" />
+</g>
+</svg>
+</div>
+<!--Waves end-->
+
+</div>
+<!--Header ends-->
+
+<!--Content starts-->
+<div class="content flex">
+</div>
+<!--Content ends-->
   </div>
 </div>
-<script src='https://www.google.com/recaptcha/api.js'></script>
+<script src='https://www.google.com/recaptcha/api.js?render=6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2'></script>
 <script>
    function onSubmit(token) {
-     document.getElementById("form").submit();
+    document.getElementById("token").value = token;
+    document.getElementById("form").submit();
    }
  </script>
+ <script src="../../public/js/auth.js"></script>
 </body>
 
 </html>

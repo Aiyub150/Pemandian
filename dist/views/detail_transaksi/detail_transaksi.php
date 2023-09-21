@@ -3,7 +3,7 @@ require '../../app/config.php';
 
 session_start();
 
-if (!isset($_SESSION['id_user']) || !isset($_SESSION['level']) != '1') {
+if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
     header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
     exit();
 }
@@ -19,6 +19,7 @@ $result = $conn->query($sql);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>transaksi - Pemandian</title>
 
+    <link rel="stylesheet" href="../../../public/css/loader.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app-dark.css">
@@ -165,7 +166,23 @@ $result = $conn->query($sql);
             </div>        
     </section>
 </div>
+<div class="loader-container" id="loader-container">
+                <div class="spinner-box">
+                <div class="blue-orbit leo">
+                </div>
 
+                <div class="green-orbit leo">
+                </div>
+                
+                <div class="red-orbit leo">
+                </div>
+                
+                <div class="white-orbit w1 leo">
+                </div><div class="white-orbit w2 leo">
+                </div><div class="white-orbit w3 leo">
+                </div>
+                </div>
+        </div>
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
@@ -181,7 +198,7 @@ $result = $conn->query($sql);
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
-
+<script src="../../../public/js/loader.js"></script>
 </body>
 
 </html>

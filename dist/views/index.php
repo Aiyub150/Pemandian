@@ -95,7 +95,7 @@ $conn->close();
             <div class="container">
                 <div class="masthead-heading text-uppercase">Selamat Datang Di Pemandian</div>
                 <div class="masthead-subheading">Pengalaman Pemandian yang Tidak Terlupakan</div>
-                <a class="btn btn-warning btn-xl text-uppercase" href="register.php">Daftar Sekarang</a>
+                <a class="btn btn-warning btn-xl text-uppercase" href="tiket/pesan.php">Pesan Sekarang</a>
             </div>
         </header>
         <!-- Services-->

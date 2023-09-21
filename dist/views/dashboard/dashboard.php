@@ -18,15 +18,14 @@ if (isset($_SESSION['level']) != '1') {
     <link rel="stylesheet" href="../../../public/assets/css/main/app-dark.css">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.svg" type="image/x-icon">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.png" type="image/png">
-    
-<link rel="stylesheet" href="../../../public/assets/css/shared/iconly.css">
+    <link rel="stylesheet" href="../../../public/css/loader.css">
+    <link rel="stylesheet" href="../../../public/assets/css/shared/iconly.css">
 
 </head>
 
 <body>
-<img src="assets/images/svg-loaders/ball-triangle.svg" class="me-4" style="width: 3rem"
-                            alt="audio">
     <div id="app">
+    
         <div id="sidebar" class="active">
             <div class="sidebar-wrapper active">
     <div class="sidebar-header position-relative">
@@ -225,13 +224,30 @@ if (isset($_SESSION['level']) != '1') {
         </div>
     </section>
 </div>
+        <div class="loader-container" id="loader-container">
+                <div class="spinner-box">
+                <div class="blue-orbit leo">
+                </div>
 
+                <div class="green-orbit leo">
+                </div>
+                
+                <div class="red-orbit leo">
+                </div>
+                
+                <div class="white-orbit w1 leo">
+                </div><div class="white-orbit w2 leo">
+                </div><div class="white-orbit w3 leo">
+                </div>
+                </div>
+        </div>
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
                         <p>2023 &copy; Pemandian</p>
                     </div>
                 </div>
+
             </footer>
         </div>
     </div>
@@ -241,7 +257,7 @@ if (isset($_SESSION['level']) != '1') {
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
-
+<script src="../../../public/js/loader.js"></script>
 </body>
 
 </html>

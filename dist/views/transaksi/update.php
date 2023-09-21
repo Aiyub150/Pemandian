@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_user']) || !isset($_SESSION['level']) != '1') {
+if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
     header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
     exit();
 }

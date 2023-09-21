@@ -1,6 +1,6 @@
 <?php
 session_start();
-if (!isset($_SESSION['id_user']) || !isset($_SESSION['level']) != '1') {
+if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
     header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
     exit();
 }
@@ -25,6 +25,7 @@ $result = $conn->query($sql);
     <link rel="stylesheet" href="../../../public/assets/css/main/app-dark.css">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.svg" type="image/x-icon">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.png" type="image/png">
+    <link rel="stylesheet" href="../../../public/css/loader.css">
     
 <link rel="stylesheet" href="../../../public/assets/css/shared/iconly.css">
 <link rel="stylesheet" href="../../../public/assets/extensions/sweetalert2/sweetalert2.min.css">
@@ -174,7 +175,23 @@ $result = $conn->query($sql);
             </div>        
     </section>
 </div>
+<div class="loader-container" id="loader-container">
+                <div class="spinner-box">
+                <div class="blue-orbit leo">
+                </div>
 
+                <div class="green-orbit leo">
+                </div>
+                
+                <div class="red-orbit leo">
+                </div>
+                
+                <div class="white-orbit w1 leo">
+                </div><div class="white-orbit w2 leo">
+                </div><div class="white-orbit w3 leo">
+                </div>
+                </div>
+        </div>
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
@@ -192,7 +209,7 @@ $result = $conn->query($sql);
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
 <script src="../../../public/assets/extensions/sweetalert2/sweetalert2.min.js"></script>>
 <script src="../../../public/assets/js/pages/sweetalert2.js"></script>>
-
+<script src="../../../public/js/loader.js"></script>
 </body>
 
 </html>
