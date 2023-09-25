@@ -87,12 +87,22 @@ $result = $conn->query($sql);
             </ul>
         </ul>
         <ul class="menu">
+            <li class="sidebar-title">Manage User</li>
+            <li
+                class="sidebar-item">
+                <a href="../user/user.php" class='sidebar-link'>
+                    <i class="fa fa-user"></i>
+                    <span>user</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
                 class="sidebar-item">
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                    <span>jhonducky</span>
+                    <span><?= $_SESSION['username'] ?></span>
                 </a>
             </li>
             <li 
@@ -132,7 +142,6 @@ $result = $conn->query($sql);
                                 <thead>
                                     <tr>
                                         <th>id user</th>
-                                        <th>rating</th>
                                         <th>ulasan</th>
    										<th>tgl_ulasan</th>
                                         <th colspan="2">action</th>
@@ -144,7 +153,6 @@ $result = $conn->query($sql);
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $row["id_user"] . "</td>";
-                                            echo "<td>" . $row["rating"] . "</td>";
                                             echo "<td>" . $row["ulasan"] . "</td>";
                                             echo "<td>" . $row["tgl_ulasan"] . "</td>";
                                             echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_user"] . '"><i class="fa fa-comment"></i></a></td>';

@@ -70,6 +70,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <input type="text" placeholder="Masukkan email anda" id="email" name="email" required>
         </div>
         <div class="login-form-group">
+            <label for="no_tlp">No Telepon<span class="required-star">*</span></label>
+            <input type="text" placeholder="Masukkan nomor telepon anda" id="email" name="no_telepon" required>
+        </div>
+        <div class="login-form-group">
             <label for="pwd">Password <span class="required-star">*</span></label>
             <input autocomplete="off" type="password" placeholder="Minimum 8 characters" id="pwd" name="password" required>
         </div>

@@ -2,7 +2,6 @@
 require '../app/config.php';
 session_start();
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Secret Key ini kita ambil dari halaman Google reCaptcha
     // Sesuai pada catatan saya di STEP 1 nomor 6
@@ -22,8 +21,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cek = mysqli_num_rows($result);
     if ($cek > 0) {
         $_SESSION['id_user'] = $d['id_user'];
-        $_SESSION['username'] = $d['id_user'];
-        $_SESSION['level'] = $d['id_user'];
+        $_SESSION['username'] = $d['username'];
+        $_SESSION['level'] = $d['level'];
         
         if($_SESSION['level'] == 1){
             header("location: dashboard/dashboard.php"); 

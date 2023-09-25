@@ -6,51 +6,24 @@ if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
 }
 require '../../app/config.php';
 
-$id_tiket = ""; // Inisialisasi nilai awal untuk id_transaksi
-
-if (isset($_GET["id"])) {
-    $id_tiket = $_GET["id"];
-    $sql = "SELECT * FROM tiket WHERE id_tiket='$id_tiket'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        $data = $result->fetch_assoc();
-        $nama_tiket = $data["nama_tiket"];
-        $harga = $data["harga"];        
-    } else {
-        echo "Data tidak ditemukan.";
-    }
-}
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nama_tiket = $_POST["nama_tiket"];
-    $harga = $_POST["harga"];
+    $id_user = $_POST["id_user"];
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+    $email = $_POST["email"];
+    $no_telepon = $_POST["no_telepon"];
+    $level = $_POST["level"];
 
-    // Cek apakah data diubah oleh user atau tidak
-    $sql_select = "SELECT * FROM tiket WHERE id_tiket='$id_tiket'";
-    $result_select = $conn->query($sql_select);
-    
-    if ($result_select->num_rows > 0) {
-        $data = $result_select->fetch_assoc();
-        
-        // Mengambil data yang diubah oleh user atau menggunakan data sebelumnya
-        $nama_tiket = ($nama_tiket !== '') ? $nama_tiket : $data["nama_tiket"];
-        $harga = ($harga !== '') ? $harga : $data["harga"];
-        
-        // Update data di database
-        $sql_update = "UPDATE tiket SET nama_tiket='$nama_tiket', harga='$harga' WHERE id_tiket='$id_tiket'";
-        
-        if ($conn->query($sql_update) === true) {
-            header("Location: tiket.php"); // Ganti transaksi.php dengan halaman yang sesuai
-            exit;
-        } else {
-            echo "Error: " . $sql_update . "<br>" . $conn->error;
-        }
+    $sql = "INSERT INTO users (id_user, username, password, email, no_telepon, level) VALUES ('$id_user', '$username', '$password', '$email', '$no_telepon', '$level')";
+
+    if ($conn->query($sql) === true) {
+        header("location: user.php");
     } else {
-        echo "Data tidak ditemukan.";
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
 }
 ?> 
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -58,7 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tiket - Pemandian</title>
+    <title>transaksi - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -110,10 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </a>
             <ul class="submenu">
                 <li class="submenu-item">
-                    <a href="../transaksi/transaksi.php">Transaksi</a>
-                </li>
-                <li class="submenu-item active">
-                    <a href="tiket.php">Tiket</a>
+                    <a href="transaksi.php">Transaksi</a>
                 </li>
             </ul>
         </li>
@@ -132,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <ul class="menu">
             <li class="sidebar-title">Manage User</li>
             <li
-                class="sidebar-item">
+                class="sidebar-item active">
                 <a href="../user/user.php" class='sidebar-link'>
                     <i class="fa fa-user"></i>
                     <span>user</span>
@@ -167,7 +137,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </header>
             
 <div class="page-heading">
-    <h3>Tiket - Transaksi</h3>
+    <h3>Manage User - User</h3>
 </div>
 <div class="page-content">
     <section class="row">
@@ -175,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="col-md-6 col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4 class="card-title">Update Data Transaksi</h4>
+                    <h4 class="card-title">Tambah User</h4>
                   </div>
                   <div class="card-content">
                     <div class="card-body">
@@ -183,25 +153,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="form-body">
                           <div class="row">
                             <div class="col-md-4">
-                              <label for="email-horizontal">NAMA TIKET</label>
+                              <label for="contact-info-horizontal">USERNAME</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="email-horizontal" class="form-control" name="nama_tiket" placeholder="nama tiket"  value="<?php echo $nama_tiket; ?>">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="username" placeholder="username" >
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">HARGA TIKET</label>
+                              <label for="contact-info-horizontal">PASSWORD</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="harga" placeholder="harga tiket"  value="<?php echo $harga; ?>">
+                              <input type="password" id="password" class="form-control" name="password" placeholder="password" ><a class='btn' id='toggleButton' title='Lihat Password' style="margin-top: 5px;"><i id='eyeIcon' class='fa fa-eye'></i> Lihat Password</a>
                             </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">EMAIL</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="email" placeholder="email" >
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">NO TELEPON</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <input type="text" id="contact-info-horizontal" class="form-control" name="no_telepon" placeholder="no telepon" >
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">LEVEL</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                                <select name="levelx" id="" class="form-select">
+                                    <option value="">Pilih Level</option>
+                                    <option value="0" >pengguna</option>
+                                    <option value="1" >admin</option>
+                                    <option value="2" >staff</option>
+
+                                </select>
+                            </div>
+                            
                             <div class="col-sm-12 d-flex justify-content-end">
                               <button type="submit" class="btn btn-primary me-1 mb-1">
-                                Submit
+                                Tambah
                               </button>
                               <button type="reset" class="btn btn-light-secondary me-1 mb-1">
                                 Reset
                               </button>
-                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='tiket.php'">
+                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='user.php'">
                                     Kembali
                                 </button>
                             </div>
@@ -232,7 +227,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
-
+<script>
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            var passwordField = document.getElementById('password');
+            var eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -6,65 +6,23 @@ if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
 }
 require '../../app/config.php';
 
-$id_tiket = ""; // Inisialisasi nilai awal untuk id_transaksi
-
-if (isset($_GET["id"])) {
-    $id_tiket = $_GET["id"];
-    $sql = "SELECT * FROM tiket WHERE id_tiket='$id_tiket'";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        $data = $result->fetch_assoc();
-        $nama_tiket = $data["nama_tiket"];
-        $harga = $data["harga"];        
-    } else {
-        echo "Data tidak ditemukan.";
-    }
-}
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nama_tiket = $_POST["nama_tiket"];
-    $harga = $_POST["harga"];
-
-    // Cek apakah data diubah oleh user atau tidak
-    $sql_select = "SELECT * FROM tiket WHERE id_tiket='$id_tiket'";
-    $result_select = $conn->query($sql_select);
-    
-    if ($result_select->num_rows > 0) {
-        $data = $result_select->fetch_assoc();
-        
-        // Mengambil data yang diubah oleh user atau menggunakan data sebelumnya
-        $nama_tiket = ($nama_tiket !== '') ? $nama_tiket : $data["nama_tiket"];
-        $harga = ($harga !== '') ? $harga : $data["harga"];
-        
-        // Update data di database
-        $sql_update = "UPDATE tiket SET nama_tiket='$nama_tiket', harga='$harga' WHERE id_tiket='$id_tiket'";
-        
-        if ($conn->query($sql_update) === true) {
-            header("Location: tiket.php"); // Ganti transaksi.php dengan halaman yang sesuai
-            exit;
-        } else {
-            echo "Error: " . $sql_update . "<br>" . $conn->error;
-        }
-    } else {
-        echo "Data tidak ditemukan.";
-    }
-}
-?> 
-
+$sql = "SELECT * FROM users";
+$result = $conn->query($sql);
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tiket - Pemandian</title>
+    <title>user - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app-dark.css">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.svg" type="image/x-icon">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.png" type="image/png">
+    <link rel="stylesheet" href="../../../public/css/loader.css">
     
 <link rel="stylesheet" href="../../../public/assets/css/shared/iconly.css">
 
@@ -97,14 +55,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item">
-                <a href="../dashboard/dashboard.html" class='sidebar-link'>
+                <a href="../dashboard/dashboard.php" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li
             class="sidebar-item has-sub">
-            <a href="../dashboard/dashboard.html" class='sidebar-link'>
+            <a href="#" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
             </a>
@@ -113,7 +71,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <a href="../transaksi/transaksi.php">Transaksi</a>
                 </li>
                 <li class="submenu-item active">
-                    <a href="tiket.php">Tiket</a>
+                    <a href="#">Tiket</a>
                 </li>
             </ul>
         </li>
@@ -132,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <ul class="menu">
             <li class="sidebar-title">Manage User</li>
             <li
-                class="sidebar-item">
+                class="sidebar-item active">
                 <a href="../user/user.php" class='sidebar-link'>
                     <i class="fa fa-user"></i>
                     <span>user</span>
@@ -167,60 +125,87 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </header>
             
 <div class="page-heading">
-    <h3>Tiket - Transaksi</h3>
+    <h3>Manage User - User</h3>
 </div>
 <div class="page-content">
     <section class="row">
                 <div class="card">
-                    <div class="col-md-6 col-12">
-                <div class="card">
-                  <div class="card-header">
-                    <h4 class="card-title">Update Data Transaksi</h4>
-                  </div>
-                  <div class="card-content">
-                    <div class="card-body">
-                      <form class="form form-horizontal" method="post">
-                        <div class="form-body">
-                          <div class="row">
-                            <div class="col-md-4">
-                              <label for="email-horizontal">NAMA TIKET</label>
-                            </div>
-                            <div class="col-md-8 form-group">
-                              <input type="text" id="email-horizontal" class="form-control" name="nama_tiket" placeholder="nama tiket"  value="<?php echo $nama_tiket; ?>">
-                            </div>
-                            <div class="col-md-4">
-                              <label for="contact-info-horizontal">HARGA TIKET</label>
-                            </div>
-                            <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="harga" placeholder="harga tiket"  value="<?php echo $harga; ?>">
-                            </div>
-                            <div class="col-sm-12 d-flex justify-content-end">
-                              <button type="submit" class="btn btn-primary me-1 mb-1">
-                                Submit
-                              </button>
-                              <button type="reset" class="btn btn-light-secondary me-1 mb-1">
-                                Reset
-                              </button>
-                              <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='tiket.php'">
-                                    Kembali
-                                </button>
-                            </div>
-                          </div>
-                        </div>
-                      </form>
+                    <div class="card-header">
+                        <h4 class="card-title">Tabel User</h4>
                     </div>
-                  </div>
+                    <div class="card-content">
+                        <div class="card-body">
+            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                        </div>
+
+                        <!-- Table with no outer spacing -->
+                        <div class="table-responsive">
+                            <table class="table mb-0 table-lg">
+                                <thead>
+                                    <tr>
+                                        <th>username</th>
+                                        <th colspan="2" style="text-align: center;">password</th>
+   										<th>email</th>
+                                        <th>no telepon</th>
+                                        <th>level</th>
+                                        <th colspan="2">action</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                <?php
+                                    if ($result->num_rows > 0) {
+                                        while ($row = $result->fetch_assoc()) {
+                                            echo "<tr>";
+                                            echo "<td>" . $row["username"] . "</td>";
+                                            echo "<td><input class='form-control' value='". $row["password"] ."' type='password' id='password_" . $row["id_user"] ."'></input></td>";
+                                            echo "<td><button class='btn toggleButton' data-id='". $row["id_user"] ."' title='Lihat Password'><i class='fa fa-eye'></i></button></td>";
+                                            echo "<td>" . $row["email"] . "</td>";
+                                            echo "<td>" . $row["no_telepon"] . "</td>";
+                                            if ($row['level'] == '0'){
+                                                echo "<td>Pengguna</td>";
+                                            } elseif($row['level'] == '1'){
+                                                echo "<td>Admin</td>";
+                                            } else {
+                                                echo "<td>Staff</td>";
+                                            }
+                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_user"] . '"><i class="bi bi-pencil"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_user"] . '"><i class="fa fa-trash"></i></a></td>';
+                                            echo "</tr>";
+                                        }
+                                    } else {
+                                        echo "<tr><td colspan='5' style='text-align: center;'>Tidak ada data.</td></tr>";
+                                    }
+                                ?>
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-              </div>
-                </div>
-        </div>
+            </div>        
     </section>
 </div>
+<div class="loader-container" id="loader-container">
+                <div class="spinner-box">
+                <div class="blue-orbit leo">
+                </div>
 
+                <div class="green-orbit leo">
+                </div>
+                
+                <div class="red-orbit leo">
+                </div>
+                
+                <div class="white-orbit w1 leo">
+                </div><div class="white-orbit w2 leo">
+                </div><div class="white-orbit w3 leo">
+                </div>
+                </div>
+        </div>
             <footer>
                 <div class="footer clearfix mb-0 text-muted">
                     <div class="float-start">
-                        <p>2023 &copy; Pemandian</p>
+                        <p>2023 © Pemandian</p>
                     </div>
                 </div>
             </footer>
@@ -232,7 +217,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
-
+<script src="../../../public/js/loader.js"></script>
+<script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var toggleButtons = document.getElementsByClassName('toggleButton');
+                Array.from(toggleButtons).forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        var id = button.getAttribute('data-id'); // Ambil ID dari tombol
+                        var passwordField = document.getElementById('password_' + id);
+                        var eyeIcon = button.firstElementChild;
+                        
+                        if (passwordField.type === 'password') {
+                            passwordField.type = 'text';
+                            eyeIcon.classList.remove('fa-eye');
+                            eyeIcon.classList.add('fa-eye-slash');
+                        } else {
+                            passwordField.type = 'password';
+                            eyeIcon.classList.remove('fa-eye-slash');
+                            eyeIcon.classList.add('fa-eye');
+                        }
+                    });
+                });
+            });
+    </script>
 </body>
 
 </html>

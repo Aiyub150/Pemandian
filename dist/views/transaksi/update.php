@@ -134,12 +134,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </ul>
         </ul>
         <ul class="menu">
+            <li class="sidebar-title">Manage User</li>
+            <li
+                class="sidebar-item">
+                <a href="../user/user.php" class='sidebar-link'>
+                    <i class="fa fa-user"></i>
+                    <span>user</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
                 class="sidebar-item">
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                    <span>jhonducky</span>
+                    <span><?= $_SESSION['username'] ?></span>
                 </a>
             </li>
             <li 

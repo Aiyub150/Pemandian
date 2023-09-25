@@ -5,11 +5,10 @@
 </style>
 <?php
 require '../app/config.php';
-
+session_start();
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
-
 // Ambil data dari formulir
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $conn->real_escape_string($_POST["username"]);
@@ -85,7 +84,13 @@ $conn->close();
                         <li class="nav-item"><a class="nav-link" href="#about">Tiket</a></li>
                         <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
-                        <li class="nav-item"><a class="nav-link" href="login.php">Login</a></li>
+                        <?php
+                        if (isset($_SESSION['id_user'])){
+                            echo "<li class='nav-item'><a class='nav-link' href='logout.php'>Logout</a></li>";
+                        } else {
+                            echo "<li class='nav-item'><a class='nav-link' href='login.php'>Login</a></li>";
+                        }
+                        ?>
                     </ul>
                 </div>
             </div>

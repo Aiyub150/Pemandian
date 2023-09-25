@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pesan tiket - Pemandian</title>
     <link rel="stylesheet" href="../../../public/css/auth.css">
-    <link rel="stylesheet" href="../../../public/css/waves.css">
+    <link rel="stylesheet" href="../../../public/css/waves3.css">
     <link rel="icon" type="image/x-icon" href="../../../public/img/icon.png" />
 </head>
 

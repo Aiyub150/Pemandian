@@ -48,6 +48,13 @@ if (isset($_SESSION['level']) != '1') {
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
+            <li
+                class="sidebar-item">
+                <a href="../index.php" class='sidebar-link'>
+                    <i class="fa fa-desktop"></i>
+                    <span>Halaman utama</span>
+                </a>
+            </li>
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item active ">
@@ -84,12 +91,29 @@ if (isset($_SESSION['level']) != '1') {
             </ul>
         </ul>
         <ul class="menu">
+            <li class="sidebar-title">Manage User</li>
+            <li
+                class="sidebar-item">
+                <a href="../user/user.php" class='sidebar-link'>
+                    <i class="fa fa-user"></i>
+                    <span>user</span>
+                </a>
+            </li>
+        </ul>
+        <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
                 class="sidebar-item">
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
-                    <span>jhonducky</span>
+                    <span><?= $_SESSION['username'] ?></span>
+                </a>
+            </li>
+            <li 
+                class="sidebar-item">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    <span>Pengaturan</span>
                 </a>
             </li>
             <li 
