@@ -52,6 +52,15 @@ $result = $conn->query($sql);
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
+
+        <li
+                class="sidebar-item">
+                <a href="../index.php" class='sidebar-link'>
+                    <i class="fa fa-desktop"></i>
+                    <span>Halaman utama</span>
+                </a>
+        </li>
+
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item">
@@ -60,6 +69,7 @@ $result = $conn->query($sql);
                     <span>Dashboard</span>
                 </a>
             </li>
+            
             <li
             class="sidebar-item has-sub active">
             <a href="#" class='sidebar-link'>

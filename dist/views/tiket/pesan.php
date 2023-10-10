@@ -98,6 +98,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="input-group">
                 <span class="input-group-addon">Rp.</span>
                 <input autocomplete="off" type="text" value="" id="total" name="totaltiket" readonly>
+                
             </div>
         </div>
         <button class="rounded-button login-cta g-recaptcha" type="submit"
