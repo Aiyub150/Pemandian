@@ -1,9 +1,17 @@
-<?php 
-session_start();
-if (isset($_SESSION['level']) != '1') {
-    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
-    exit();
+<?php
+
+session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+
+// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
+
+} else {
+
+header('Location: ../index.php'); exit();
+
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -90,16 +98,21 @@ if (isset($_SESSION['level']) != '1') {
                 </li>
             </ul>
         </ul>
-        <ul class="menu">
-            <li class="sidebar-title">Manage User</li>
+        <?php
+        if(isset($_SESSION['level']) && $_SESSION['level'] == '1') {
+            echo "
+        <ul class='menu'>
+            <li class='sidebar-title'>Manage User</li>
             <li
-                class="sidebar-item">
-                <a href="../user/user.php" class='sidebar-link'>
-                    <i class="fa fa-user"></i>
+                class='sidebar-item'>
+                <a href='../user/user.php' class='sidebar-link'>
+                    <i class='fa fa-user'></i>
                     <span>user</span>
                 </a>
             </li>
-        </ul>
+        </ul>";
+        }
+        ?>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 

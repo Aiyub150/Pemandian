@@ -404,6 +404,16 @@ $conn->close();
                             </div>
                         </div>
                     </div>
+                        <?php
+                    if ($_SERVER["REQUEST_METHOD"] == "POST") 
+    $sql = "INSERT INTO ulasan (ulasan, tgl_ulasan) VALUES ('$ulasan', '$tgl_ulasan')";
+
+    if ($conn->query($sql) === true) {
+        header("location: ulasan.php");
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+    ?> 
                     <!-- Submit success message-->
                     <!---->
                     <!-- This is what your users will see when the form-->
@@ -634,4 +644,5 @@ $conn->close();
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
-</html>
+        </html>
+        

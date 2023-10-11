@@ -1,9 +1,17 @@
 <?php
-session_start();
-if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
-    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
-    exit();
+
+session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+
+// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
+
+} else {
+
+header('Location: ../index.php'); exit();
+
 }
+
 require '../../app/config.php';
 
 $id_user = ""; // Inisialisasi nilai awal untuk id_user
@@ -130,7 +138,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </a>
             <ul class="submenu">
                 <li class="submenu-item">
-                    <a href="transaksi.php">Transaksi</a>
+                    <a href="../transaksi/transaksi.php">Transaksi</a>
+                </li>
+                <li class="submenu-item">
+                    <a href="../tiket/tiket.php">Tiket</a>
                 </li>
             </ul>
         </li>
@@ -163,6 +174,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                     <span><?= $_SESSION['username'] ?></span>
+                </a>
+            </li>
+            <li 
+                class="sidebar-item">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    <span>Pengaturan</span>
                 </a>
             </li>
             <li 

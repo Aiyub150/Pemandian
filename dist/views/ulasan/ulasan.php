@@ -1,9 +1,17 @@
 <?php
-session_start();
-if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
-    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
-    exit();
+
+session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+
+// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
+
+} else {
+
+header('Location: ../index.php'); exit();
+
 }
+
 require '../../app/config.php';
 
 $sql = "SELECT * FROM ulasan";
@@ -93,16 +101,21 @@ $result = $conn->query($sql);
                 </li>
             </ul>
         </ul>
-        <ul class="menu">
-            <li class="sidebar-title">Manage User</li>
+        <?php
+        if(isset($_SESSION['level']) && $_SESSION['level'] == '1') {
+            echo "
+        <ul class='menu'>
+            <li class='sidebar-title'>Manage User</li>
             <li
-                class="sidebar-item">
-                <a href="../user/user.php" class='sidebar-link'>
-                    <i class="fa fa-user"></i>
+                class='sidebar-item'>
+                <a href='../user/user.php' class='sidebar-link'>
+                    <i class='fa fa-user'></i>
                     <span>user</span>
                 </a>
             </li>
-        </ul>
+        </ul>";
+        }
+        ?>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
@@ -110,6 +123,13 @@ $result = $conn->query($sql);
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                     <span><?= $_SESSION['username'] ?></span>
+                </a>
+            </li>
+            <li 
+                class="sidebar-item">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    <span>Pengaturan</span>
                 </a>
             </li>
             <li 
@@ -148,10 +168,10 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg">
                                 <thead>
                                     <tr>
-                                        <th>id user</th>
-                                        <th>ulasan</th>
-   										<th>tgl_ulasan</th>
-                                        <th colspan="2">action</th>
+                                        <th>#</th>
+                                        <th>ULASAN</th>
+   										<th>TANGGAL ULASAN</th>
+                                        <th colspan="2">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody> 

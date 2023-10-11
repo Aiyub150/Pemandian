@@ -1,9 +1,17 @@
 <?php
-session_start();
-if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
-    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
-    exit();
+
+session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+
+// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
+
+} else {
+
+header('Location: ../index.php'); exit();
+
 }
+
 require '../../app/config.php';
 
 $sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi";
@@ -98,16 +106,21 @@ $result = $conn->query($sql);
                 </li>
             </ul>
         </ul>
-        <ul class="menu">
-            <li class="sidebar-title">Manage User</li>
+        <?php
+        if(isset($_SESSION['level']) && $_SESSION['level'] == '1') {
+            echo "
+        <ul class='menu'>
+            <li class='sidebar-title'>Manage User</li>
             <li
-                class="sidebar-item">
-                <a href="../user/user.php" class='sidebar-link'>
-                    <i class="fa fa-user"></i>
+                class='sidebar-item'>
+                <a href='../user/user.php' class='sidebar-link'>
+                    <i class='fa fa-user'></i>
                     <span>user</span>
                 </a>
             </li>
-        </ul>
+        </ul>";
+        }
+        ?>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
@@ -115,6 +128,13 @@ $result = $conn->query($sql);
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                     <span><?= $_SESSION['username'] ?></span>
+                </a>
+            </li>
+            <li 
+                class="sidebar-item">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    <span>Pengaturan</span>
                 </a>
             </li>
             <li 
@@ -156,12 +176,12 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg" id="dataTable">
                                 <thead>
                                     <tr>
-                                        <th>id_transaksi</th>
-                                        <th>id_user</th>
-                                        <th>id_tiket</th>
-   										<th>tgl_pemesanan</th>
-                                        <th>total_harga</th>
-                                        <th colspan="3" style="text-align: center;">action</th>
+                                        <th>#</th>
+                                        <th>ID USER</th>
+                                        <th>ID TIKET</th>
+   										<th>TGL PEMESANAN</th>
+                                        <th>TOTAL HAR</th>
+                                        <th colspan="3" style="text-align: center;">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody> 
