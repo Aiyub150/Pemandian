@@ -180,7 +180,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               <label for="contact-info-horizontal">LEVEL</label>
                             </div>
                             <div class="col-md-8 form-group">
-                                <select name="levelx" id="" class="form-select">
+                                <select name="level" id="" class="form-select">
                                     <option value="">Pilih Level</option>
                                     <option value="0" >pengguna</option>
                                     <option value="1" >admin</option>

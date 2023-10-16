@@ -11,8 +11,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $tiket = $_POST["id_tiket"];
     $tgl_pemesanan = $_POST["tgl_pemesanan"];
     $total_harga = $_POST["total_harga"];
+    $metode_pembayaran = $_POST["metode_pembayaran"];
+    $status = $_POST["status"];
 
-    $sql = "INSERT INTO transaksi (id_user, id_tiket, tgl_pemesanan, total_harga) VALUES ('$user', '$tiket', '$tgl_pemesanan', '$total_harga')";
+    $sql = "INSERT INTO transaksi (id_user, id_tiket, tgl_pemesanan, total_harga, metode_pembayaran, status) VALUES ('$user', '$tiket', '$tgl_pemesanan', '$total_harga', '$metode_pembayaran', '$status')";
 
     if ($conn->query($sql) === true) {
         header("location: transaksi.php");
@@ -24,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+<head>+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>transaksi - Pemandian</title>
@@ -38,7 +40,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <link rel="stylesheet" href="../../../public/assets/css/shared/iconly.css">
 
 </head>
-
+<style>
+    .hidden{
+        display: none;
+    }
+</style>
 <body>
     <div id="app">
         <div id="sidebar" class="active">
@@ -155,10 +161,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               <input type="text" id="email-horizontal" class="form-control" name="id_user" placeholder="id user">
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">ID TIKET</label>
+                              <label for="contact-info-horizontal">JENIS TIKET</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="id_tiket" placeholder="id_tiket">
+                            <div id="input_section">
+                              <select class="form-select" name="jenis_tiket" id="jenis_tiket">
+                                <option value="">Pilih Jenis Tiket</option>
+                                <option value="dewasa">Dewasa</option>
+                                <option value="remaja">Remaja</option>
+                                <option value="anak">Anak-Anak</option>
+                              </select>
+
+                              <div id="input_dewasa" class="input_wrapper" style="display:none;">
+                              <div id="ticket"></div>
+                                <label for="jumlah_dewasa">Jumlah Tiket Dewasa:</label>
+                                <input type="number" name="jumlah_dewasa" id="jumlah_dewasa">
+                              </div>
+
+                              <div id="input_remaja" class="input_wrapper" style="display:none;">
+                                <label for="jumlah_remaja">Jumlah Tiket Remaja:</label>
+                                <input type="number" name="jumlah_remaja" id="jumlah_remaja">
+                              </div>
+
+                              <div id="input_anak" class="input_wrapper" style="display:none;">
+                                <label for="jumlah_anak">Jumlah Tiket Anak-Anak:</label>
+                                <input type="number" name="jumlah_anak" id="jumlah_anak">
+                              </div>
+                            </div>
                             </div>
                             <div class="col-md-4">
                               <label for="contact-info-horizontal">TANGGAL PEMESANAN</label>
@@ -170,7 +199,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               <label for="contact-info-horizontal">TOTAL HARGA</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="contact-info-horizontal" class="form-control" name="total_harga" placeholder="total harga">
+                              <input type="number" id="total" class="form-control" name="total_harga" placeholder="total harga">
+                            </div>
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">METODE PEMBAYARAN</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <select name="metode_pembayaran" class="form-select" id="">
+                                <option value="">Pilih Metode Pembayaran</option>
+                                <option value="dana">Dana</option>
+                                <option value="gopay">GoPay</option>
+                                <option value="bayar di tempat">bayar di tempat</option>
+                              </select>
+                              </div>                        
+
+                            <div class="col-md-4">
+                              <label for="contact-info-horizontal">STATUS PEMBAYARAN</label>
+                            </div>
+                            <div class="col-md-8 form-group">
+                              <select name="status" class="form-select" id="">
+                                <option value="">Pilih Status Pembayaran</option>
+                                <option value="done">Sudah Dibayar</option>
+                                <option value="notyet">Belum Dibayar</option>
+                              </select>
                             </div>
                             <div class="col-sm-12 d-flex justify-content-end">
                               <button type="submit" class="btn btn-primary me-1 mb-1">
@@ -210,7 +261,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
+<script>
+document.getElementById('jenis_tiket').addEventListener('change', function() {
+  var selectedTiket = this.value;
+  
+  // Menyembunyikan semua input yang ada
+  document.querySelectorAll('.input_wrapper').forEach(function(input) {
+    input.style.display = 'none';
+  });
 
+  // Mencari atau membuat div input sesuai dengan jenis tiket yang dipilih
+  var inputDiv = document.getElementById('input_' + selectedTiket);
+  if (!inputDiv && selectedTiket !== '') {
+    inputDiv = document.createElement('div');
+    inputDiv.id = 'input_' + selectedTiket;
+    inputDiv.className = 'input_wrapper';
+    inputDiv.innerHTML = `
+      <label for="jumlah_${selectedTiket}">Jumlah Tiket ${selectedTiket}:</label>
+      <input type="number" name="jumlah_${selectedTiket}" id="jumlah_${selectedTiket}">
+    `;
+    document.getElementById('ticket').append(inputDiv);
+  }
+
+  // Menampilkan input sesuai dengan pilihan tiket
+  if (selectedTiket !== '') {
+    inputDiv.style.display = 'block';
+  }
+
+  // Menyembunyikan option yang sudah dipilih
+  document.querySelectorAll('option').forEach(function(option) {
+    if (option.value === selectedTiket) {
+      option.style.display = 'none';
+    }
+  });
+});
+
+    function onSubmit(token) {
+     document.getElementById("form").submit();
+   }
+   function hitungTotal() {
+        var dewasa = document.getElementById("dewasa").value;
+        var hargaDewasa = document.getElementById("hargaDewasa").value;
+        var remaja = document.getElementById("remaja").value;
+        var hargaRemaja = document.getElementById("hargaRemaja").value;
+        var anak = document.getElementById("anak").value;
+        var hargaAnak = document.getElementById("hargaAnak").value;
+        var totalDewasa = dewasa * hargaDewasa;
+        var totalRemaja = remaja * hargaRemaja;
+        var totalAnak = anak * hargaAnak;
+        var total = totalDewasa + totalRemaja + totalAnak;
+
+        document.getElementById("total").value = total;
+    }
+ </script>
 </body>
 
 </html>

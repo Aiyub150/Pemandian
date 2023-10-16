@@ -3,10 +3,13 @@ session_start();
 if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
     header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
     exit();
+} elseif (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '2') {
+    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
+    exit();
 }
 require '../../app/config.php';
 
-$sql = "SELECT id_transaksi, id_user, id_tiket, tgl_pemesanan, total_harga FROM transaksi";
+$sql = "SELECT * FROM transaksi INNER JOIN users ON transaksi.id_user=users.id_user";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
@@ -91,16 +94,20 @@ $result = $conn->query($sql);
                 </li>
             </ul>
         </ul>
-        <ul class="menu">
-            <li class="sidebar-title">Manage User</li>
-            <li
-                class="sidebar-item">
-                <a href="../user/user.php" class='sidebar-link'>
-                    <i class="fa fa-user"></i>
-                    <span>user</span>
-                </a>
-            </li>
-        </ul>
+        <?php 
+        if(isset($_SESSION['level']) && $_SESSION['level'] == '1'){
+            echo "
+                <ul class='menu'>
+                    <li class='sidebar-title'>Manage User</li>
+                    <li class='sidebar-item'>
+                        <a href='../user/user.php' class='sidebar-link'>
+                            <i class='fa fa-user'></i>
+                            <span>user</span>
+                        </a>
+                    </li>
+                </ul>";
+        } 
+        ?>      
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
@@ -141,7 +148,8 @@ $result = $conn->query($sql);
                         <div class="card-body">
             <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
             <button onclick="exportToExcel('dataTable', 'data')" class="btn btn-success"><i class="fa fa-file-excel-o" aria-hidden="true"></i></button>
-            <button onclick="exportToPDF('dataTable', 'data')" class="btn btn-danger"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+            <button onclick="exportToPDF('dataTable', 'data')" class="btn btn-danger" id="convertToPDF"><i class="fa fa-file-pdf-o" aria-hidden="true"></i></button>
+            <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
                         </div>
 
                         <!-- Table with no outer spacing -->
@@ -149,11 +157,12 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg" id="dataTable">
                                 <thead>
                                     <tr>
-                                        <th>id_transaksi</th>
-                                        <th>id_user</th>
-                                        <th>id_tiket</th>
+                                        <th>#</th>
+                                        <th>NAMA</th>
    										<th>tgl_pemesanan</th>
                                         <th>total_harga</th>
+                                        <th>METODE PEMBAYARAN</th>
+                                        <th>STATUS</th>
                                         <th colspan="3" style="text-align: center;">action</th>
                                     </tr>
                                 </thead>
@@ -163,17 +172,25 @@ $result = $conn->query($sql);
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
                                             echo "<td>" . $row["id_transaksi"] . "</td>";
-                                            echo "<td>" . $row["id_user"] . "</td>";
-                                            echo "<td>" . $row["id_tiket"] . "</td>";
+                                            echo "<td>" . $row["nama"] . "</td>";
                                             echo "<td>" . $row["tgl_pemesanan"] . "</td>";
                                             echo "<td>" . $row["total_harga"] . "</td>";
+                                            echo "<td>" . $row["metode_pembayaran"] . "</td>";
+                                            echo "<td>"; 
+                                            $status = $row["status"];
+                                            if($status == 'done'){
+                                                echo "<i class='fa fa-check-square' aria-hidden='true' style='color: green;'></i> Sudah Dibayar";
+                                            } else {
+                                                echo "<i class='fa fa-window-close' aria-hidden='true' style='color: red;'></i> Belum Dibayar";
+                                            }
+                                            echo "</td>";
                                             echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
                                             echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
                                             echo '<td><a class="btn icon btn-warning" href="../detail_transaksi/detail_transaksi.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-list"></i></a></td>';
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='6'>Tidak ada data.</td></tr>";
+                                        echo "<tr><td colspan='7' style='text-align: center;'>Tidak ada data.</td></tr>";
                                     }
                                 ?>
 
@@ -213,13 +230,19 @@ $result = $conn->query($sql);
     </div>
     <script src="../../../public/assets/js/bootstrap.js"></script>
     <script src="../../../public/assets/js/app.js"></script>
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
 <script src="../../../public/assets/extensions/sweetalert2/sweetalert2.min.js"></script>>
 <script src="../../../public/assets/js/pages/sweetalert2.js"></script>>
 <script src="../../../public/js/loader.js"></script>
+<script src="../../../public/js/dataTable.js"></script>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="../../../public/js/sweetalert.js"></script>
 </body>
 
 </html>

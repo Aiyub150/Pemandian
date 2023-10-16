@@ -7,9 +7,11 @@ if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
     header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
     exit();
 }
-
-$sql = "SELECT id_detail_transaksi, id_transaksi, id_tiket FROM detail_transaksi";
+if (isset($_GET["id"])) {
+$id_transaksi = $_GET["id"];
+$sql = "SELECT * FROM detail_transaksi INNER JOIN transaksi ON detail_transaksi.id_transaksi=transaksi.id_transaksi WHERE detail_transaksi.id_transaksi='$id_transaksi'";
 $result = $conn->query($sql);
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -137,7 +139,9 @@ $result = $conn->query($sql);
                     </div>
                     <div class="card-content">
                         <div class="card-body">
-            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                        <button type="button" class="btn btn-danger me-1 mb-1" onclick="location.href='../transaksi/transaksi.php'">
+                                    Kembali
+                        </button>
                         </div>
 
                         <!-- Table with no outer spacing -->
@@ -145,10 +149,12 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg">
                                 <thead>
                                     <tr>
-                                        <th>id_detail_transaksi</th>
-                                        <th>id_transaksi</th>              
-                                        <th>id_tiket</th>
-                                        <th colspan="2">action</th>
+                                        <th>#</th>
+                                        <th>ID TRANSAKSI</th>              
+                                        <th>JENIS TIKET</th>
+                                        <th>QUANTITY</th>
+                                        <th>SUB TOTAL</th>
+                                        <th>ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody> 
@@ -158,13 +164,14 @@ $result = $conn->query($sql);
                                             echo "<tr>";
                                             echo "<td>" . $row["id_detail_transaksi"] . "</td>";
                                             echo "<td>" . $row["id_transaksi"] . "</td>";
-                                            echo "<td>" . $row["id_tiket"] . "</td>";
-                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_detail_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_detail_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
+                                            echo "<td>" . $row["jenis_tiket"] . "</td>";
+                                            echo "<td>" . $row["quantity"] . "</td>";
+                                            echo "<td>" . $row["sub_total"] . "</td>";
+                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
                                             echo "</tr>";
                                         }
                                     } else {
-                                        echo "<tr><td colspan='5'>Tidak ada data.</td></tr>";
+                                        echo "<tr><td colspan='7' style='text-align: center;'>Tidak ada data.</td></tr>";
                                     }
                                 ?>
 

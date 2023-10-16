@@ -21,11 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $cek = mysqli_num_rows($result);
     if ($cek > 0) {
         $_SESSION['id_user'] = $d['id_user'];
+        $_SESSION['nama'] = $d['nama'];
         $_SESSION['username'] = $d['username'];
         $_SESSION['level'] = $d['level'];
         
         if($_SESSION['level'] == 1){
             header("location: dashboard/dashboard.php"); 
+        } elseif($_SESSION['level'] == 2){
+          header("location: dashboard/dashboard.php"); 
         } else {
             header("location: index.php");
         }
