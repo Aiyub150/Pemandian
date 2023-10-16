@@ -8,7 +8,7 @@ if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level']
 
 } else {
 
-header('Location: ../index.php'); exit();
+header('Location: ../ulasan.php'); exit();
 
 }
 
@@ -169,8 +169,11 @@ $result = $conn->query($sql);
                                 <thead>
                                     <tr>
                                         <th>#</th>
+   										<th>USERNAME</th>
+                                        <th>EMAIL</th>
+                                        <th>NOMER HP</th>
                                         <th>ULASAN</th>
-   										<th>TANGGAL ULASAN</th>
+                                        <th>TGL ULASAN</th>
                                         <th colspan="2">ACTION</th>
                                     </tr>
                                 </thead>
@@ -179,11 +182,14 @@ $result = $conn->query($sql);
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $row["id_user"] . "</td>";
+                                            echo "<td>" . $row["id_ulasan"] . "</td>";
+                                            echo "<td>" . $row["username"] . "</td>";
+                                            echo "<td>" . $row["email"] . "</td>";
+                                            echo "<td>" . $row["no_telepon"] . "</td>";
                                             echo "<td>" . $row["ulasan"] . "</td>";
                                             echo "<td>" . $row["tgl_ulasan"] . "</td>";
-                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_user"] . '"><i class="fa fa-comment"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_user"] . '"><i class="fa fa-trash"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_ulasan"] . '"><i class="fa fa-comment"></i></a></td>';
+                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_ulasan"] . '"><i class="fa fa-trash"></i></a></td>';
                                             echo "</tr>";
                                         }
                                     } else {

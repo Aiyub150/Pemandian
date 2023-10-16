@@ -15,10 +15,10 @@ header('Location: ../index.php'); exit();
 require '../../app/config.php';
 
 if (isset($_GET["id"])) {
-    $id_user = $_GET["id"];
+    $id_ulasan = $_GET["id"];
     
     // Delete data from the database
-    $sql = "DELETE FROM ulasan WHERE id_user='$id_user'";
+    $sql = "DELETE FROM ulasan WHERE id_ulasan='$id_ulasan'";
     
     if ($conn->query($sql) === true) {
         header("Location: ulasan.php"); // Redirect to the page after deletion
