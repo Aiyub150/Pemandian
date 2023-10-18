@@ -19,9 +19,6 @@ $result = $conn->query($sql);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>transaksi - Pemandian</title>
-    <script src="../../../public/js/exportToExcel.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
-    <script src="../../../public/js/exportToPDF.js"></script>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
@@ -230,7 +227,9 @@ $result = $conn->query($sql);
     </div>
     <script src="../../../public/assets/js/bootstrap.js"></script>
     <script src="../../../public/assets/js/app.js"></script>
+    <script src="../../../public/js/exportToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="../../../public/js/exportToPDF.js"></script>
 
 <!-- Need: Apexcharts -->
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
@@ -238,7 +237,6 @@ $result = $conn->query($sql);
 <script src="../../../public/assets/extensions/sweetalert2/sweetalert2.min.js"></script>>
 <script src="../../../public/assets/js/pages/sweetalert2.js"></script>>
 <script src="../../../public/js/loader.js"></script>
-<script src="../../../public/js/dataTable.js"></script>
 
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

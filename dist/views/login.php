@@ -10,32 +10,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // dengan mengirimkan scret key dan hasil dari response recaptcha nya
     $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
     $response = json_decode($verify);
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    if($response == true){
+      $username = $_POST['username'];
+      $password = $_POST['password'];
 
-    // Membuat prepared statementecho 
-    $query = "SELECT * FROM users WHERE (username='$username' OR email='$username') AND password='$password'";
-    $result = mysqli_query($conn, $query);
-    $d = mysqli_fetch_assoc($result);
-    
-    $cek = mysqli_num_rows($result);
-    if ($cek > 0) {
-        $_SESSION['id_user'] = $d['id_user'];
-        $_SESSION['nama'] = $d['nama'];
-        $_SESSION['username'] = $d['username'];
-        $_SESSION['level'] = $d['level'];
-        
-        if($_SESSION['level'] == 1){
+      // Membuat prepared statementecho 
+      $query = "SELECT * FROM users WHERE (username='$username' OR email='$username') AND password='$password'";
+      $result = mysqli_query($conn, $query);
+      $d = mysqli_fetch_assoc($result);
+      
+      $cek = mysqli_num_rows($result);
+      if ($cek > 0) {
+          $_SESSION['id_user'] = $d['id_user'];
+          $_SESSION['nama'] = $d['nama'];
+          $_SESSION['username'] = $d['username'];
+          $_SESSION['level'] = $d['level'];
+          
+          if($_SESSION['level'] == 1){
+              header("location: dashboard/dashboard.php"); 
+          } elseif($_SESSION['level'] == 2){
             header("location: dashboard/dashboard.php"); 
-        } elseif($_SESSION['level'] == 2){
-          header("location: dashboard/dashboard.php"); 
-        } else {
-            header("location: index.php");
-        }
-        exit();
-    } else {
-        $error = "<p style='color: red;'>Username atau password yang anda masukkan salah<p>";
-    }
+          } else {
+              header("location: index.php");
+          }
+          exit();
+      } else {
+          $error = "<p style='color: red;'>Username atau password yang anda masukkan salah<p>";
+      }
+  }
 }
 ?>
 
@@ -50,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="../../public/css/waves.css">
     <link rel="icon" type="image/x-icon" href="../../public/img/icon.png" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css">
+    
 </head>
 
 <body>
