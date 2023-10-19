@@ -1,9 +1,18 @@
 <?php
-session_start();
-if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
-    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
-    exit();
+
+
+session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+
+// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
+
+} else {
+
+header('Location: ../index.php'); exit();
+
 }
+
 require '../../app/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -67,23 +76,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
+            <li
+                class="sidebar-item">
+                <a href="../index.php" class='sidebar-link'>
+                    <i class="fa fa-desktop"></i>
+                    <span>Halaman utama</span>
+                </a>
+            </li>
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item">
-                <a href="../dashboard/dashboard.html" class='sidebar-link'>
+                <a href="../dashboard/dashboard.php" class='sidebar-link'>
                     <i class="bi bi-grid-fill"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
             <li
             class="sidebar-item has-sub">
-            <a href="../dashboard/dashboard.html" class='sidebar-link'>
+            <a href="../dashboard/dashboard.php" class='sidebar-link'>
                 <i class="fa fa-ticket" aria-hidden="true"></i>
                 <span>Tiket</span>
             </a>
             <ul class="submenu">
                 <li class="submenu-item">
-                    <a href="transaksi.php">Transaksi</a>
+                    <a href="../transaksi/transaksi.php">Transaksi</a>
+                </li>
+                <li class="submenu-item">
+                    <a href="../tiket/tiket.php">Tiket</a>
                 </li>
             </ul>
         </li>
@@ -99,16 +118,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </li>
             </ul>
         </ul>
-        <ul class="menu">
-            <li class="sidebar-title">Manage User</li>
+        <?php
+        if(isset($_SESSION['level']) && $_SESSION['level'] == '1') {
+            echo "
+        <ul class='menu'>
+            <li class='sidebar-title'>Manage User</li>
             <li
-                class="sidebar-item active">
-                <a href="../user/user.php" class='sidebar-link'>
-                    <i class="fa fa-user"></i>
+                class='sidebar-item'>
+                <a href='../user/user.php' class='sidebar-link'>
+                    <i class='fa fa-user'></i>
                     <span>user</span>
                 </a>
             </li>
-        </ul>
+        </ul>";
+        }
+        ?>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
@@ -116,6 +140,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                     <span><?= $_SESSION['username'] ?></span>
+                </a>
+            </li>
+            <li 
+                class="sidebar-item">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    <span>Pengaturan</span>
                 </a>
             </li>
             <li 

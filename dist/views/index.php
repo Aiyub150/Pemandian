@@ -6,49 +6,32 @@
 <?php
 require '../app/config.php';
 session_start();
+
 if ($conn->connect_error) {
     die("Koneksi gagal: " . $conn->connect_error);
 }
-// Ambil data dari formulir
+
+// Ambil data dari formulir jika ada data yang dikirim
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $conn->real_escape_string($_POST["username"]);
-    $email = $conn->real_escape_string($_POST["email"]);
-    $no_telepon = $conn->real_escape_string($_POST["no_telepon"]);
-    $ulasan = $conn->real_escape_string($_POST["ulasan"]);
+    $username = $_POST['username'];
+    $email = $_POST['email'];
+    $no_telepon = $_POST['no_telepon'];
+    $ulasan = $_POST['ulasan'];
     $tgl_ulasan = date("Y-m-d");
-
-    // Periksa apakah data user sudah ada di tabel user
-    $sql_check_user = "SELECT id_user FROM users WHERE username='$username' AND email='$email' AND no_telepon='$no_telepon'";
-    $result = $conn->query($sql_check_user);
-
-    if ($result) {
-        if ($result->num_rows > 0) {
-            // Jika data user sudah ada, ambil ID user
-            $row = $result->fetch_assoc();
-            $id_user = $row["id_user"];
-        } else {
-            // Jika data user belum ada, tambahkan ke tabel user
-            $sql_insert_user = "INSERT INTO users (username, email, no_telepon) VALUES ('$username', '$email', '$no_telepon')";
-            if ($conn->query($sql_insert_user)) {
-                $id_user = $conn->insert_id;
-            } else {
-                echo "Error: " . $sql_insert_user . "<br>" . $conn->error;
-            }
-        }
-
-        // Tambahkan ulasan ke tabel ulasan
-        $sql_insert_ulasan = "INSERT INTO ulasan (id_user, ulasan, tgl_ulasan) VALUES ('$id_user', '$ulasan', '$tgl_ulasan')";
-        if ($conn->query($sql_insert_ulasan)) {
-            echo "Ulasan berhasil disimpan.";
-        } else {
-            echo "Error: " . $sql_insert_ulasan . "<br>" . $conn->error;
-        }
+   $sql = "INSERT INTO ulasan (username, email, no_telepon, ulasan, tgl_ulasan) VALUES ('$username', '$email', '$no_telepon', '$ulasan', '$tgl_ulasan')";
+   if ($conn->query($sql) === true) {
     } else {
-        echo "Error: " . $sql_check_user . "<br>" . $conn->error;
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
+
+    // Selanjutnya, Anda dapat mengeksekusi query SQL dan melakukan operasi yang diperlukan.
 }
-$conn->close();
+    // Tutup koneksi database
+    $conn->close();
 ?>
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -376,54 +359,56 @@ $conn->close();
                 <!-- To make this form functional, sign up at-->
                 <!-- https://startbootstrap.com/solution/contact-forms-->
                 <!-- to get an API token!-->
-                <form id="contactForm" data-sb-form-api-token="API_TOKEN">
-                    <div class="row align-items-stretch mb-5">
-                        <div class="col-md-6">
-                            <div class="form-group">
-                                <!-- Name input-->
-                                <input class="form-control" id="name" name="username" type="text" placeholder="Nama Anda *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="name:required">Nama diperlukan</div>
-                            </div>
-                            <div class="form-group">
-                                <!-- Email address input-->
-                                <input class="form-control" id="email" name="email" type="email" placeholder="Email Anda *" data-sb-validations="required,email" />
-                                <div class="invalid-feedback" data-sb-feedback="email:required">alamat emaildiperlukan.</div>
-                                <div class="invalid-feedback" data-sb-feedback="email:email">Email yang anda masukkan tidak valid.</div>
-                            </div>
-                            <div class="form-group mb-md-0">
-                                <!-- Phone number input-->
-                                <input class="form-control" name="no_telepon" id="phone" type="tel" placeholder="Nomor Telepon Anda *" data-sb-validations="required" />
-                                <div class="invalid-feedback" data-sb-feedback="phone:required">nomor telepon diperlukan.</div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-group form-group-textarea mb-md-0">
-                                <!-- Message input-->
-                                <textarea class="form-control" name="ulasan" id="message" placeholder="Kritik & Saran *" data-sb-validations="required"></textarea>
-                                <div class="invalid-feedback" data-sb-feedback="message:required">Berikan kritik dan saran sesuai dengan pengalaman anda di pemandian kami.</div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Submit success message-->
-                    <!---->
-                    <!-- This is what your users will see when the form-->
-                    <!-- has successfully submitted-->
-                    <div class="d-none" id="submitSuccessMessage">
-                        <div class="text-center text-white mb-3">
-                            <div class="fw-bolder">Kritik Dan Saran Anda Berhasil Dikirim!</div>
-                            Untuk informasi lebih lanjut anda bisa menghubungi kami melalui link dibawah ini
-                            <br />
-                            <a href="https://www.youtube.com/channel/UC0zCg-hXAFtmSsve6rw4GoA">Hubungi Kami Disini  </a>
-                        </div>
-                    </div>
-                    <!-- Submit error message-->
-                    <!---->
-                    <!-- This is what your users will see when there is-->
-                    <!-- an error submitting the form-->
-                    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                    <!-- Submit Button-->
-                    <div class="text-center"><button class="btn btn-warning btn-xl text-uppercase disabled" id="submitButton" type="submit">Kirim</button></div>
-                </form>
+               <form id="contactForm" method="post">
+    <div class="row  align-items-stretch mb-5">
+        <div class="col-md-6">
+            <div class="form-group">
+                <!-- Name input -->
+                <input class="form-control" id="name" name="username" type="text" placeholder="Nama Anda *" data-sb-validations="required" />
+                <div class="invalid-feedback" data-sb-feedback="name:required">Nama diperlukan</div>
+            </div>
+            <div class="form-group">
+                <!-- Email address input -->
+                <input class="form-control" id="email" name="email" type="email" placeholder="Email Anda *" data-sb-validations="required,email" />
+                <div class="invalid-feedback" data-sb-feedback="email:required">Alamat email diperlukan.</div>
+                <div class="invalid-feedback" data-sb-feedback="email:email">Email yang anda masukkan tidak valid.</div>
+            </div>
+            <div class="form-group mb-md-0">
+                <!-- Phone number input -->
+                <input class="form-control" name="no_telepon" id="phone" type="tel" placeholder="Nomor Telepon Anda *" data-sb-validations="required" />
+                <div class="invalid-feedback" data-sb-feedback="phone:required">Nomor telepon diperlukan.</div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group form-group-textarea mb-md-0">
+                <!-- Message input -->
+                <textarea class="form-control" name="ulasan" id="message" placeholder="Kritik & Saran *" data-sb-validations="required"></textarea>
+                <div class="invalid-feedback" data-sb-feedback="message:required">Berikan kritik dan saran sesuai dengan pengalaman anda di pemandian kami.</div>
+            </div>
+        </div>
+    </div>
+    <!-- Submit success message -->
+    <!-- -->
+    <!-- This is what your users will see when the form -->
+    <!-- has successfully submitted -->
+    <div class="d-none" id="submitSuccessMessage">
+        <div class="text-center text-white mb-3">
+            <div class="fw-bolder">Kritik Dan Saran Anda Berhasil Dikirim!</div>
+            Untuk informasi lebih lanjut anda bisa menghubungi kami melalui link dibawah ini
+            <br />
+            <a href="https://www.youtube.com/channel/UC0zCg-hXAFtmSsve6rw4GoA">Hubungi Kami Disini  </a>
+        </div>
+    </div>
+    <!-- Submit error message -->
+    <!-- -->
+    <!-- This is what your users will see when there is -->
+    <!-- an error submitting the form -->
+    <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
+    <!-- Submit Button -->
+    <div class="text-center"><button class="btn btn-warning btn-xl text-uppercase" id="submitButton" type="submit">Kirim</button></div>
+</form>
+
+
             </div>
         </section>
         <!-- Footer-->
@@ -634,4 +619,5 @@ $conn->close();
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
-</html>
+        </html>
+

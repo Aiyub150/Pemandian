@@ -1,9 +1,17 @@
 <?php
-session_start();
-if (!isset($_SESSION['id_user']) || isset($_SESSION['level']) != '1') {
-    header("location: ../login.php"); // Arahkan ke halaman login jika tidak ada sesi id_user
-    exit();
+
+session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+
+// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
+
+} else {
+
+header('Location: ../index.php'); exit();
+
 }
+
 require '../../app/config.php';
 
 $sql = "SELECT * FROM users";
@@ -52,6 +60,13 @@ $result = $conn->query($sql);
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
+            <li
+                class="sidebar-item">
+                <a href="../index.php" class='sidebar-link'>
+                    <i class="fa fa-desktop"></i>
+                    <span>Halaman utama</span>
+                </a>
+            </li>
             <li class="sidebar-title">Menu</li>
             <li
                 class="sidebar-item">
@@ -70,8 +85,8 @@ $result = $conn->query($sql);
                 <li class="submenu-item">
                     <a href="../transaksi/transaksi.php">Transaksi</a>
                 </li>
-                <li class="submenu-item active">
-                    <a href="#">Tiket</a>
+                <li class="submenu-item">
+                    <a href="../tiket/tiket.php">Tiket</a>
                 </li>
             </ul>
         </li>
@@ -87,16 +102,21 @@ $result = $conn->query($sql);
                 </li>
             </ul>
         </ul>
-        <ul class="menu">
-            <li class="sidebar-title">Manage User</li>
+        <?php
+        if(isset($_SESSION['level']) && $_SESSION['level'] == '1') {
+            echo "
+        <ul class='menu'>
+            <li class='sidebar-title'>Manage User</li>
             <li
-                class="sidebar-item active">
-                <a href="../user/user.php" class='sidebar-link'>
-                    <i class="fa fa-user"></i>
+                class='sidebar-item'>
+                <a href='../user/user.php' class='sidebar-link'>
+                    <i class='fa fa-user'></i>
                     <span>user</span>
                 </a>
             </li>
-        </ul>
+        </ul>";
+        }
+        ?>
         <ul class="menu">
             <li class="sidebar-title">Authentication</li>
             <li 
@@ -104,6 +124,13 @@ $result = $conn->query($sql);
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-user-circle-o" aria-hidden="true"></i>
                     <span><?= $_SESSION['username'] ?></span>
+                </a>
+            </li>
+            <li 
+                class="sidebar-item">
+                <a href="index.html" class='sidebar-link'>
+                    <i class="fa fa-cogs" aria-hidden="true"></i>
+                    <span>Pengaturan</span>
                 </a>
             </li>
             <li 
@@ -143,12 +170,12 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg">
                                 <thead>
                                     <tr>
-                                        <th>username</th>
-                                        <th colspan="2" style="text-align: center;">password</th>
-   										<th>email</th>
-                                        <th>no telepon</th>
-                                        <th>level</th>
-                                        <th colspan="2">action</th>
+                                        <th>USERNAME</th>
+                                        <th colspan="2" style="text-align: center;">PASSWORD</th>
+   										<th>EMAIL</th>
+                                        <th>NO TELEPON</th>
+                                        <th>LEVEL</th>
+                                        <th colspan="2">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody> 
