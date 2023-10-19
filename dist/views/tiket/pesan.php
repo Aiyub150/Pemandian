@@ -100,23 +100,28 @@
             <input type="number" class="hidden" value="5000" id="hargaAnak" onchange="hitungTotal()">
           </div>
         </div>
-        <div class="login-form-group">
-            <label for="remaja">Tiket Remaja <span class="required-star">*</span></label>
-            <input autocomplete="off" type="number" min="0" value="0" id="remaja" name="tiket" onchange="hitungTotal()">
-            <input autocomplete="off" type="number" value="10000" id="hargaRemaja" name="tiket" class="hidden">
-        </div>
-        <div class="login-form-group">
-            <label for="anak">Tiket Anak <span class="required-star">*</span></label>
-            <input autocomplete="off" type="number" min="0" value="0" id="anak" name="tiket" onchange="hitungTotal()">
-            <input autocomplete="off" type="number" value="5000" id="hargaAnak" name="tiket" class="hidden">
-        </div>
-        <div class="login-form-group">
-            <label for="anak">Total harga tiket <span class="required-star">*</span></label>
-            <div class="input-group">
-                <span class="input-group-addon">Rp.</span>
-                <input autocomplete="off" type="text" value="" id="total" name="totaltiket" readonly>
-                
-            </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Metode Pembayaran</legend>
+        <div class="form__radios">
+          <div class="form__radio">
+            <img src="../../../public/img/gopay.png" alt="" style="width: 20px; height: 20px; margin-right: 10px;">
+            <label for="visa">GOPAY</label>
+            <input checked id="visa" name="payment-method" type="radio" />
+          </div>
+          
+          <div class="form__radio">
+            <img src="../../../public/img/dana.png" alt="" style="width: 20px; height: 20px; margin-right: 10px;">
+            <label for="visa">Dana</label>
+            <input id="visa" name="payment-method" type="radio" />
+          </div>
+          
+          <div class="form__radio">
+            <img src="../../../public/img/cod.png" alt="" style="width: 20px; height: 20px; margin-right: 10px;">
+            <label for="mastercard">BAYAR DI LOKER</label>
+            <input id="mastercard" name="payment-method" type="radio" />
+          </div>
         </div>
       </fieldset>
 
@@ -154,7 +159,7 @@
     </div>
     </form>
   </div>
-  
+
   <div id="popup" class="popup">
     <div class="popup-content">
         <!-- Isi dari nota pembayaran -->
