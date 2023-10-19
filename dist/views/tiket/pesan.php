@@ -70,9 +70,11 @@
       <div>
         <div class="card">
           <address>
-            <?php if(isset($_SESSION['nama'])){ echo "Hallo ".$_SESSION['nama']." !"; }?><br />
-            <br />
-            United States of America
+            <?php if(isset($_SESSION['nama'])){ echo "Hallo kak ".$_SESSION['nama']." !"; }?><br />
+            Silahkan pesan tiket dan berikut adalah harga-harganya : <br />
+            Dewasa : Rp. 15.000<br />
+            Remaja : Rp. 10.000<br />
+            Anak   : Rp. 5.000<br />
           </address>
         </div>
       </div>
@@ -82,17 +84,20 @@
         <div class="form__radios">
           <div class="form__radio">
             <label for="jenis_tiket">Dewasa</label>
-            <input name="jenis_tiket" class="form-control" min="0" value="0" type="number" style="width: 180px;"/>
+            <input name="jenis_tiket" id="dewasa" class="form-control" min="0" value="0" type="number" style="width: 180px;" onchange="hitungTotal()"/>
+            <input type="number" class="hidden" value="15000" id="hargaDewasa" onchange="hitungTotal()">
           </div>
 
           <div class="form__radio">
             <label for="jenis_tiket">Remaja</label>
-            <input name="jenis_tiket" class="form-control" min="0" value="0" type="number" style="width: 180px;"/>
+            <input name="jenis_tiket" id="remaja" class="form-control" min="0" value="0" type="number" style="width: 180px;" onchange="hitungTotal()"/>
+            <input type="number" class="hidden" value="10000" id="hargaRemaja" onchange="hitungTotal()">
           </div>
 
           <div class="form__radio">
             <label for="jenis_tiket">Anak-Anak</label>
-            <input name="jenis_tiket" class="form-control" min="0" value="0" type="number" style="width: 180px;"/>
+            <input name="jenis_tiket" id="anak" class="form-control" min="0" value="0" type="number" style="width: 180px;" onchange="hitungTotal()"/>
+            <input type="number" class="hidden" value="5000" id="hargaAnak" onchange="hitungTotal()">
           </div>
         </div>
       </fieldset>
@@ -127,21 +132,21 @@
         <tbody>
           <tr>
             <td>Tiket Dewasa</td>
-            <td align="right">Rp. 15.000</td>
+            <td align="right">Rp. <input type="number" value="0" id="subtotalDewasa" style="width: 70px;" onchange="hitungTotal()" readonly></td>
           </tr>
           <tr>
             <td>Tiket Remaja</td>
-            <td align="right">Rp. 10.000</td>
+            <td align="right">Rp. <input type="number" value="0" id="subtotalRemaja" style="width: 70px;" onchange="hitungTotal()" readonly></td>
           </tr>
           <tr>
             <td>Tiket Anak</td>
-            <td align="right">Rp. 5.000</td>
+            <td align="right">Rp. <input type="number" value="0" id="subtotalAnak" style="width: 70px;" onchange="hitungTotal()" readonly></td>
           </tr>
         </tbody>
         <tfoot>
           <tr>
             <td>Total</td>
-            <td align="right">Rp. 20.000</td>
+            <td align="right">Rp. <input type="number" value="0" id="total" style="width: 70px;" onchange="hitungTotal()" readonly></td>
           </tr>
         </tfoot>
       </table>
@@ -150,107 +155,76 @@
     <div>
       <button class="button button--full g-recaptcha" data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
         data-callback='onSubmit' 
-        data-action='submit' type="submit"><i class="fa fa-shopping-bag" aria-hidden="true"></i> Bayar Sekarang</button>
+        data-action='submit' type="submit" onclick="tampilkanPopup()"><i class="fa fa-ticket" aria-hidden="true"></i> Pesan Sekarang</button>
     </div>
     </form>
   </div>
+  
+  <div id="popup" class="popup">
+    <div class="popup-content">
+        <!-- Isi dari nota pembayaran -->
+        <!-- Anda dapat menambahkan elemen-elemen HTML sesuai dengan kebutuhan Anda -->
+        <h2>Nota Pembayaran</h2>
+        <p>Tiket Dewasa: <span id="notaDewasa"></span></p>
+        <p>Tiket Remaja: <span id="notaRemaja"></span></p>
+        <p>Tiket Anak-Anak: <span id="notaAnak"></span></p>
+        <p>Total: <span id="notaTotal"></span></p>
+        <!-- Akhir dari isi nota pembayaran -->
+        <button onclick="tutupPopup()">Tutup</button>
+    </div>
+</div>
 
   <script src='https://www.google.com/recaptcha/api.js'></script>
   <script>
-       function onSubmit(token) {
+  function onSubmit(token) {
         document.getElementById("token").value = token;
         document.getElementById("form").submit();
-      }
-
-      function tampilkanInput() {
-      var pilihan = document.getElementById("pilihanTiket").value;
-      var inputContainer = document.getElementById("inputContainer");
-
-      if (pilihan === "dewasa") {
-          tambahInput("Tiket Dewasa", "Dewasa", 15000);
-      } else if (pilihan === "remaja") {
-          tambahInput("Tiket Remaja", "Remaja", 10000);
-      } else if (pilihan === "anak") {
-          tambahInput("Tiket Anak", "Anak", 5000);
-      }
   }
 
-  function tambahInput(label, name, harga) {
-      var inputElement = document.createElement("div");
-      inputElement.classList.add("login-form-group");
+  function hitungTotal() {
+    // Calculate subtotal for each ticket type
+    let dewasa = document.getElementById("dewasa").value;
+    let hargadewasa = document.getElementById("hargaDewasa").value;
+    let remaja = document.getElementById("remaja").value;
+    let hargaremaja = document.getElementById("hargaRemaja").value;
+    let anak = document.getElementById("anak").value;
+    let hargaanak = document.getElementById("hargaAnak").value;
 
-      inputElement.innerHTML = `
-          <label for="${name}">${label} <span class="required-star">*</span></label>
-          <input class="hidden" name="jenis_tiket" value="${label}">
-          <input autocomplete="off" type="number" min="0" value="0" id="${name}" name="quantity" onchange="hitungTotal()">
-          <input autocomplete="off" type="number" value="${harga}" id="harga${name}" name="tiket" class="hidden">
-          <input autocomplete="off" type="text" value="" id="subtotal${name}" name="sub_total" class="hidden" readonly>
-      `;
+    let sub_totalDewasa = dewasa * hargadewasa;
+    let sub_totalRemaja = remaja * hargaremaja;
+    let sub_totalAnak = anak * hargaanak;
 
-      document.getElementById("inputContainer").appendChild(inputElement);
-  }
+    // Update the subtotals in the input fields
+    document.getElementById("subtotalDewasa").value = sub_totalDewasa;
+    document.getElementById("subtotalRemaja").value = sub_totalRemaja;
+    document.getElementById("subtotalAnak").value = sub_totalAnak;
 
-  function tambahSelect() {
-      var inputContainer = document.getElementById("inputContainer");
+    // Calculate the total
+    let total = sub_totalDewasa + sub_totalRemaja + sub_totalAnak;
 
-      // Membuat array dari semua opsi yang telah dipilih
-      var selectedOptions = Array.from(document.querySelectorAll("select")).map(el => el.value);
+    // Update the total in the input field
+    document.getElementById("total").value = total;
+}
 
-      // Membuat array dari semua opsi yang tersedia
-      var options = ["dewasa", "remaja", "anak"].filter(option => !selectedOptions.includes(option));
+function tampilkanPopup() {
+    let notaDewasa = document.getElementById("subtotalDewasa").value;
+    let notaRemaja = document.getElementById("subtotalRemaja").value;
+    let notaAnak = document.getElementById("subtotalAnak").value;
+    let total = document.getElementById("total").value;
 
-      if (options.length === 0) {
-          // Semua opsi telah dipilih, menyembunyikan dropdown
-          inputContainer.innerHTML = '';
-      } else {
-          var selectElement = document.createElement("select");
-          selectElement.name = "jenisTiket";
-          selectElement.onchange = function() { tampilkanInput(); };
+    document.getElementById("notaDewasa").textContent = "Rp. " + notaDewasa;
+    document.getElementById("notaRemaja").textContent = "Rp. " + notaRemaja;
+    document.getElementById("notaAnak").textContent = "Rp. " + notaAnak;
+    document.getElementById("notaTotal").textContent = "Rp. " + total;
 
-          options.forEach(option => {
-              var optionElement = document.createElement("option");
-              optionElement.value = option;
-              optionElement.textContent = option.charAt(0).toUpperCase() + option.slice(1);
-              selectElement.appendChild(optionElement);
-          });
+    document.getElementById("popup").style.display = "flex";
+}
 
-          inputContainer.innerHTML = ''; // Menghapus elemen lama
-          inputContainer.appendChild(selectElement);
-      }
-  }
+function tutupPopup() {
+    document.getElementById("popup").style.display = "none";
+}
 
-
-
-      function onSubmit(token) {
-      document.getElementById("form").submit();
-    }
-    function hitungTotal() {
-      var d = document.getElementById("Dewasa");
-      var dewasa = d ? parseInt(d.value) : 0;
-      var hargaDewasa = document.getElementById("hargaDewasa").value;
-
-      var r = document.getElementById("Remaja");
-      var remaja = r ? parseInt(r.value) : 0;
-      var hargaRemaja = document.getElementById("hargaRemaja").value;
-
-      var a = document.getElementById("Anak");
-      var anak = a ? parseInt(a.value) : 0;
-      var hargaAnak = document.getElementById("hargaAnak").value;
-
-      var totalDewasa = dewasa * hargaDewasa;
-      var totalRemaja = remaja * hargaRemaja;
-      var totalAnak = anak * hargaAnak;
-
-      var total = totalDewasa + totalRemaja + totalAnak;
-
-      document.getElementById("total").value = total;
-      document.getElementById("subtotalDewasa").value = totalDewasa;
-      document.getElementById("subtotalRemaja").value = totalRemaja;
-      document.getElementById("subtotalAnak").value = totalAnak;
-  }
-
-
-  </script>
+  </script>  
   <script src='https://www.google.com/recaptcha/api.js?render=6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2'></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
   </body>
