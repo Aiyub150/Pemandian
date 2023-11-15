@@ -2,24 +2,41 @@
 require '../app/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    $email = $_POST['email'];
-    $no_telepon = $_POST['no_telepon'];
+  $nama = $_POST['nama'];
+  $username = $_POST['username'];
+  $password = $_POST['password'];
+  $email = $_POST['email'];
+  $no_telepon = $_POST['no_telepon'];
 
-    // Membuat prepared statement
-    $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
-    $response = json_decode($verify);
-    $stmt = $conn->prepare("INSERT INTO users (username, password, email, no_telepon) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss",  $username, $password, $email, $no_telepon);
+  $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
+  // Membuat prepared statement
+  $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
+  $response = json_decode($verify);
+  if($response == true){
+      // Pengecekan apakah username sudah digunakan sebelumnya
+      $check_username_query = "SELECT * FROM users WHERE username=?";
+      $check_username_stmt = $conn->prepare($check_username_query);
+      $check_username_stmt->bind_param("s", $username);
+      $check_username_stmt->execute();
+      $check_username_result = $check_username_stmt->get_result();
 
-    if ($stmt->execute()) {
-        header("location: login.php");
-    } else {
-        echo "Error: " . $stmt->error;
-    }
+      if ($check_username_result->num_rows > 0) {
+        echo "<div id='error-message'>Username ini sudah pernah dipakai.</div>";
+      }else {
+          // Jika username belum pernah digunakan, lakukan proses insert
+          $stmt = $conn->prepare("INSERT INTO users (nama, username, password, email, no_telepon) VALUES (?, ?, ?, ?, ?)");
+          $stmt->bind_param("sssss",  $nama, $username, $password, $email, $no_telepon);
 
-    $stmt->close();
+          if ($stmt->execute()) {
+              header("location: login.php");
+          } else {
+              echo "Error: " . $stmt->error;
+          }
+      }
+
+      // Tutup statement setelah digunakan
+      $check_username_stmt->close();
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -41,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="login-form">
     <div class="login-form-inner">
       <div class="logo">
-          <img src="../../public/img/logo_pemandian_transparant.png" alt="" style="width: 200px; height: 50px; margin-left: 70px;">
+          <img src="../../public/img/logo_pemandian_transparant.png" alt="" style="width: 200px; height: 80px; margin-left: 70px;">
         </div>
       <h1>Daftar</h1>
       <p class="body-text">Silahkan daftar akun anda terlebih dahulu.</p>
@@ -61,9 +78,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       </div>
 
       <form method="post" action="" id="form">
+      <div class="login-form-group">
+            <label for="email">Nama<span class="required-star">*</span></label>
+            <input type="text" placeholder="Masukkan nama anda" id="email" name="nama" required>
+        </div>
         <div class="login-form-group">
             <label for="email">Username<span class="required-star">*</span></label>
             <input type="text" placeholder="Masukkan username anda" id="email" name="username" required>
+            <div id="error-message" style="color: red; font-weight: bold;"></div>
         </div>
         <div class="login-form-group">
             <label for="email">Email<span class="required-star">*</span></label>
@@ -137,6 +159,9 @@ viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
     document.getElementById("token").value = token;
     document.getElementById("form").submit();
    }
+  document.getElementById('error-message').style.color = 'red';
+  document.getElementById('error-message').style.fontWeight = 'bold'; 
+
  </script>
 </body>
 

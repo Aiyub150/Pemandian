@@ -1,6 +1,7 @@
 <?php
-
 session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
+
+require '../../app/config.php';
 
 if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
 
@@ -12,6 +13,77 @@ header('Location: ../index.php'); exit();
 
 }
 
+$labels = ['januari','februari','maret', 'april', 'mei', 'juni', 'juli', 'agustus', 'september', 'oktober', 'november', 'desember'];
+
+$totalQuery = "SELECT SUM(total_harga) as total_jumlah FROM transaksi";
+$hasil = $conn->query($totalQuery);
+
+if ($hasil && $hasil->num_rows > 0) {
+    $row = $hasil->fetch_assoc();
+    $p = $row['total_jumlah'];
+} else {
+    $p = 0; // Atur ke nol jika tidak ada hasil atau terjadi kesalahan
+}
+
+$user = "SELECT COUNT(*) as jumlah_user FROM users";
+$users = $conn->query($user);
+
+if ($users && $users->num_rows > 0) {
+    $row = $users->fetch_assoc();
+    $jumlah_user = $row['jumlah_user'];
+} else {
+    $jumlah_user = 0; // Atur ke nol jika tidak ada hasil atau terjadi kesalahan
+}
+
+for ($bulan = 1; $bulan <= 12; $bulan++) {
+    $sql = "SELECT * FROM transaksi WHERE MONTH(tgl_pemesanan) = $bulan";
+    $result = $conn->query($sql);
+    $data[$bulan] = $result->num_rows; // Simpan jumlah transaksi untuk bulan ini
+}
+
+for ($jenis_tiket = 1; $jenis_tiket <= 2; $jenis_tiket++) {
+    if ($jenis_tiket == 1) {
+        $jenis_tiket_label = "Dewasa";
+    } else {
+        $jenis_tiket_label = "Anak-Anak";
+    }
+
+    $sql = "SELECT quantity FROM detail_transaksi WHERE jenis_tiket = '$jenis_tiket_label'";
+    $result = $conn->query($sql);
+
+    // Jika query berhasil dijalankan
+    if ($result) {
+        $total_quantity = 0;
+
+        while ($row = $result->fetch_assoc()) {
+            $total_quantity += $row['quantity'];
+        }
+
+        $tiket[$jenis_tiket] = $total_quantity;
+    }
+}
+
+$dewasa = "SELECT SUM(sub_total) as total_sub_total FROM detail_transaksi WHERE jenis_tiket='Dewasa'";
+$hasild = $conn->query($dewasa);
+
+$total_sub_total_dewasa = 0;
+
+if ($hasild && $hasild->num_rows > 0) {
+    while ($row = $hasild->fetch_assoc()) {
+        $total_sub_total_dewasa += $row['total_sub_total'];
+    }
+}
+
+$anak = "SELECT SUM(sub_total) as total_sub_total FROM detail_transaksi WHERE jenis_tiket='Anak-Anak'";
+$hasila = $conn->query($anak);
+
+$total_sub_total_anak = 0;
+
+if ($hasila && $hasila->num_rows > 0) {
+    while ($row = $hasila->fetch_assoc()) {
+        $total_sub_total_anak += $row['total_sub_total'];
+    }
+}
 ?>
 
 
@@ -162,12 +234,12 @@ header('Location: ../index.php'); exit();
                             <div class="row">
                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                     <div class="stats-icon purple mb-2">
-                                        <i class="iconly-boldShow"></i>
+                                    <i class="iconly-boldProfile"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Profile Views</h6>
-                                    <h6 class="font-extrabold mb-0">112.000</h6>
+                                    <h6 class="text-muted font-semibold">Total Pengguna</h6>
+                                    <h6 class="font-extrabold mb-0"><?php echo $jumlah_user ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -179,29 +251,12 @@ header('Location: ../index.php'); exit();
                             <div class="row">
                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                     <div class="stats-icon blue mb-2">
-                                        <i class="iconly-boldProfile"></i>
+                                    <i class="fa fa-ticket" aria-hidden="true"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Followers</h6>
-                                    <h6 class="font-extrabold mb-0">183.000</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3 col-md-6">
-                    <div class="card">
-                        <div class="card-body px-4 py-4-5">
-                            <div class="row">
-                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
-                                    <div class="stats-icon green mb-2">
-                                        <i class="iconly-boldAdd-User"></i>
-                                    </div>
-                                </div>
-                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Following</h6>
-                                    <h6 class="font-extrabold mb-0">80.000</h6>
+                                    <h6 class="text-muted font-semibold">Penjualan Tiket Dewasa</h6>
+                                    <h6 class="font-extrabold mb-0">Rp. <?php echo $total_sub_total_dewasa ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -213,12 +268,29 @@ header('Location: ../index.php'); exit();
                             <div class="row">
                                 <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
                                     <div class="stats-icon red mb-2">
-                                        <i class="iconly-boldBookmark"></i>
+                                    <i class="fa fa-ticket" aria-hidden="true"></i>
                                     </div>
                                 </div>
                                 <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
-                                    <h6 class="text-muted font-semibold">Saved Post</h6>
-                                    <h6 class="font-extrabold mb-0">112</h6>
+                                    <h6 class="text-muted font-semibold">Penjualan Tiket Anak</h6>
+                                    <h6 class="font-extrabold mb-0">Rp. <?php echo $total_sub_total_anak ?></h6>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-lg-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body px-4 py-4-5">
+                            <div class="row">
+                                <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 d-flex justify-content-start ">
+                                    <div class="stats-icon green mb-2">
+                                        <i class="fa fa-money" aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7">
+                                    <h6 class="text-muted font-semibold">Total Penjualan</h6>
+                                    <h6 class="font-extrabold mb-0">Rp. <?php echo $p ?></h6>
                                 </div>
                             </div>
                         </div>
@@ -229,10 +301,10 @@ header('Location: ../index.php'); exit();
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h4>Pengunjung</h4>
+                            <h4>Data Penjualan Tiket Perbulan</h4>
                         </div>
                         <div class="card-body">
-                            <div id="chart-profile-visit"></div>
+                        <canvas id="Chart" width="400" height="140"></canvas>
                         </div>
                     </div>
                 </div>
@@ -254,10 +326,10 @@ header('Location: ../index.php'); exit();
             </div>
             <div class="card">
                 <div class="card-header">
-                    <h4>Usia Pengunjung</h4>
+                    <h4>Data Jenis Tiket </h4>
                 </div>
                 <div class="card-body">
-                    <div id="chart-visitors-profile"></div>
+                <canvas id="pie" width="200" height="240"></canvas>
                 </div>
             </div>
         </div>
@@ -297,6 +369,74 @@ header('Location: ../index.php'); exit();
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
 <script src="../../../public/js/loader.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+
+<script>
+// Ambil data dari PHP dan atur ke dalam array
+let labels = <?php echo json_encode($labels); ?>;
+let value = <?php echo json_encode($data); ?>;
+let values = Object.values(value);
+
+// Inisialisasi Chart.js
+let ctx = document.getElementById('Chart').getContext('2d');
+let myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Data Transaksi Perbulan',
+            data: values,
+            backgroundColor: 'rgba(64, 131, 201, 0.2)',
+            borderColor: 'rgba(6, 76, 161, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+let tikets = <?php echo json_encode($tiket); ?>;
+let t = Object.values(tikets);
+
+let ctk = document.getElementById('pie').getContext('2d');
+let myPie = new Chart(ctk, {
+    type: 'pie',
+    data: {
+        labels: ['Dewasa','Anak-Anak'],
+        datasets: [{
+            label: 'Rata-Rata Usia Pengunjung',
+            data: t,
+            backgroundColor: [
+                'rgba(255, 99, 132)',
+                'rgba(54, 162, 235)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)'
+            ],  // Tambahkan koma di sini
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+
+
+
+</script>
+
 </body>
 
 </html>

@@ -67,11 +67,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <li class="nav-item"><a class="nav-link" href="#about">Tiket</a></li>
                         <li class="nav-item"><a class="nav-link" href="#team">Team</a></li>
                         <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link" href="tiket/pesan.php">Pesan Tiket</a></li>
                         <?php
                         if (isset($_SESSION['id_user'])){
                             echo "<li class='nav-item'><a class='nav-link' href='logout.php'>Logout</a></li>";
                         } else {
                             echo "<li class='nav-item'><a class='nav-link' href='login.php'>Login</a></li>";
+                        }
+
+                        if (isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
+                            echo "<li class='nav-item'><a class='nav-link' href='dashboard/dashboard.php'>Dashboard</a></li>";
+                        } else {
+                            echo "";
                         }
                         ?>
                     </ul>
@@ -232,16 +239,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="timeline-panel">
                             <div class="timeline-heading">
                                 <h4>Dewasa</h4>
-                                <h4 class="subheading">Rp. 15.000</h4>
-                            </div>
-                            <!-- <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> -->
-                        </div>
-                    </li>
-                    <li class="timeline-inverted">
-                        <div class="timeline-image"><i class="fa fa-female rounded-circle img-fluid" aria-hidden="true"></i></div>
-                        <div class="timeline-panel">
-                            <div class="timeline-heading">
-                                <h4>Remaja</h4>
                                 <h4 class="subheading">Rp. 10.000</h4>
                             </div>
                             <!-- <div class="timeline-body"><p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Sunt ut voluptatum eius sapiente, totam reiciendis temporibus qui quibusdam, recusandae sit vero unde, sed, incidunt et ea quo dolore laudantium consectetur!</p></div> -->

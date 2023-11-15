@@ -1,22 +1,48 @@
 <?php
+session_start();
 
-session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
-
-if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
-
-// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
-
+if (isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')) {
+    // Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
 } else {
-
-header('Location: ../index.php'); exit();
-
+    header('Location: ../index.php');
+    exit();
 }
 
 require '../../app/config.php';
 
-$sql = "SELECT * FROM transaksi INNER JOIN users ON transaksi.id_user=users.id_user ORDER BY tgl_pemesanan DESC";
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'daily';
+$dateInput = isset($_GET['dateInput']) ? $_GET['dateInput'] : date('Y-m-d');
+
+$startDate = $endDate = $dateInput;
+
+// Query untuk mengambil data Dewasa
+$sql = "SELECT jenis_tiket, SUM(quantity) AS total_quantity 
+        FROM detail_transaksi 
+        INNER JOIN transaksi ON detail_transaksi.id_transaksi = transaksi.id_transaksi
+        WHERE transaksi.tgl_pemesanan BETWEEN '$startDate' AND '$endDate'
+        GROUP BY jenis_tiket";
+
 $result = $conn->query($sql);
+
+$chartData = array();
+
+// Inisialisasi data default
+$labels = ['Dewasa', 'Anak-Anak'];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Create a new array for each jenis_tiket
+        $chartData[] = [
+            'jenis_tiket' => $row['jenis_tiket'],
+            'total_quantity' => $row['total_quantity']
+        ];        
+    }
+}
+
+
 ?>
+
+
 <style>
     .hidden{
         display: none;
@@ -88,7 +114,7 @@ $result = $conn->query($sql);
             </a>
             <ul class="submenu">
                 <li class="submenu-item active">
-                    <a href="#">Transaksi</a>
+                    <a href="transaksi.php">Transaksi</a>
                 </li>
                 <li class="submenu-item">
                     <a href="../tiket/tiket.php">Tiket</a>
@@ -152,71 +178,30 @@ $result = $conn->query($sql);
             </header>
             
 <div class="page-heading">
-    <h3>Tiket - Transaksi</h3>
+    <h3>Tiket - Laporan Harian</h3>
 </div>
 <div class="page-content">
     <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Tabel Transaksi</h4>
+                        <h4 class="card-title">Tabel Laporan Harian</h4>
                     </div>
                     <div class="card-content">
-                        <div class="card-body">
-                            
-                            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
-                            <button onclick="printTable('dataTable')" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
-                            <a href="laporan_harian.php" class="btn btn-primary">Laporan Harian</a>
-                            <a href="laporan_bulanan.php" class="btn btn-primary">Laporan Bulanan</a>
-                            <a href="laporan_tahunan.php" class="btn btn-primary">Laporan Tahunan</a>
-                            <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
-                        </div>
+                    <div class="card-body">
+                        <a href="transaksi.php" class="btn btn-danger">Kembali</a>
+                        <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                        <button onclick="printTable('dataTable')" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+                        <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
+                        <form method="get" action="" style="margin-top: 20px;">
+                            <label for="dateInput">Pilih Tanggal:</label>
+                            <input type="date" id="dateInput" name="dateInput" value="<?= $dateInput ?>" class="form-control">
+                            <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                        </form>
+                    </div>
 
                         <!-- Table with no outer spacing -->
                         <div class="table-responsive">
-                            <table class="table mb-0 table-lg" id="dataTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID TRANSAKSI</th>
-                                        <th>NAMA</th>
-                                        <th>TGL PEMESANAN</th>
-   										<th>TOTAL</th>
-                                        <th>METODE PEMBAYARAN</th>
-                                        <th>BUKTI PEMBAYARAN</th>
-                                        <th>STATUS</th>
-                                        <th colspan="3" style="text-align: center;">ACTION</th>
-                                    </tr>
-                                </thead>
-                                <tbody> 
-                                <?php
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "<td>" . $row["id_transaksi"] . "</td>";
-                                            echo "<td>" . $row["nama"] . "</td>";
-                                            echo "<td>" . $row["tgl_pemesanan"] . "</td>";
-                                            echo "<td>" . $row["total_harga"] . "</td>";
-                                            echo "<td>" . $row["metode_pembayaran"] . "</td>";
-                                            echo "<td><img style='width: 200px; height: 200px;' src='../../app/payment/" . $row["bukti_pembayaran"] . "' alt=' Bayar Di Loket    '></td>";
-                                            echo "<td>"; 
-                                            $status = $row["status"];
-                                            if($status == 'done'){
-                                                echo "<i class='fa fa-check-square' aria-hidden='true' style='color: green;'></i> Sudah Dibayar";
-                                            } else {
-                                                echo "<i class='fa fa-window-close' aria-hidden='true' style='color: red;'></i> Belum Dibayar";
-                                            }
-                                            echo "</td>";
-                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-warning" href="../detail_transaksi/detail_transaksi.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-list"></i></a></td>';
-                                            echo "</tr>";
-                                        }
-                                    } else {
-                                        echo "<tr><td colspan='7' style='text-align: center;'>Tidak ada data.</td></tr>";
-                                    }
-                                ?>
-
-                                </tbody>
-                            </table>
+                            <canvas id="myChart" width="50" height="50"></canvas>
                         </div>
                     </div>
                 </div>
@@ -252,7 +237,7 @@ $result = $conn->query($sql);
     <script src="../../../public/assets/js/bootstrap.js"></script>
     <script src="../../../public/assets/js/app.js"></script>
     <script src="../../../public/js/exportToExcel.js"></script>
-    <script src="../../../public/j  s/exportToPDF.js"></script>
+    <script src="../../../public/js/exportToPDF.js"></script>
     <script src="../../../public/js/print.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
@@ -266,12 +251,45 @@ $result = $conn->query($sql);
 
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
 <script src="../../../public/js/sweetalert.js"></script>
 <script>
-function applyFilter(filter) {
-    window.location.href = 'laporan.php?filter=' + filter;
-}
+// PHP data to JavaScript
+let labels = <?php echo json_encode($labels); ?>;
+let chartData = <?php echo json_encode($chartData); ?>;
 
+// Extracting data for 'Dewasa' and 'Anak-Anak'
+let dataDewasa = chartData.find(item => item.jenis_tiket === 'Dewasa');
+let dataAnak = chartData.find(item => item.jenis_tiket === 'Anak-Anak');
+
+// Initialize Chart.js
+let ctx = document.getElementById('myChart').getContext('2d');
+let myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: labels,
+        datasets: [{
+            label: 'Dewasa',
+            data: [dataDewasa ? dataDewasa.total_quantity : 0], // Check if data is available
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            borderColor: 'rgba(255, 99, 132, 1)',
+            borderWidth: 1
+        }, {
+            label: 'Anak-Anak',
+            data: [dataAnak ? dataAnak.total_quantity : 0], // Check if data is available
+            backgroundColor: 'rgba(54, 162, 235, 0.5)',
+            borderColor: 'rgba(54, 162, 235, 1)',
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
 </script>
 </body>
 

@@ -15,26 +15,47 @@ header('Location: ../index.php'); exit();
 require '../../app/config.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $user = $_POST["id_user"];
-    $tiket = $_POST["id_tiket"];
-    $tgl_pemesanan = $_POST["tgl_pemesanan"];
-    $total_harga = $_POST["total_harga"];
-    $metode_pembayaran = $_POST["metode_pembayaran"];
-    $status = $_POST["status"];
+  $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
+  // Disini kita akan melakukan komunkasi dengan google recpatcha
+  // dengan mengirimkan scret key dan hasil dari response recaptcha nya
+  $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
+  $response = json_decode($verify);
+  if($response == true){
+    $sql = $conn->query("SELECT MAX(id_transaksi) as max_id FROM transaksi;");
+    $result = $sql->fetch_assoc();
+    $id_transaksi =  $result["max_id"] + 1;
+    $id_user = $_SESSION['id_user'];
+    $tgl_pemesanan = date('Y-m-d');
+    $total_harga = $_POST['totaltiket'];
+    $metode_pembayaran = $_POST['metode_pembayaran'];
+    $status = $_POST['status'];
 
-    $sql = "INSERT INTO transaksi (id_user, id_tiket, tgl_pemesanan, total_harga, metode_pembayaran, status) VALUES ('$user', '$tiket', '$tgl_pemesanan', '$total_harga', '$metode_pembayaran', '$status')";
-
-    if ($conn->query($sql) === true) {
-        header("location: transaksi.php");
+    $transaksi = "INSERT INTO transaksi (id_transaksi, id_user, tgl_pemesanan, total_harga, metode_pembayaran, bukti_pembayaran, status) VALUES ('$id_transaksi', '$id_user', '$tgl_pemesanan', '$total_harga', '$metode_pembayaran',  'bayar di loket','$status')";
+    if ($conn->query($transaksi) === true) {
+      // Lakukan loop untuk memasukkan data-detail tiket sebanyak tiga kali
+      for ($i = 1; $i <= 2; $i++) {
+        $jenis_tiket = $_POST['jenis_tiket'.$i];
+        $quantity = $_POST['quantity'.$i];
+        $sub_total = $_POST['sub_total'.$i];
+        $detail_transaksi = "INSERT INTO detail_transaksi (id_transaksi, jenis_tiket, quantity, sub_total) VALUES ('$id_transaksi', '$jenis_tiket', '$quantity', '$sub_total')";
+        
+        if ($conn->query($detail_transaksi) !== true) {
+          echo "Error: " . $conn->error;
+          break; // Keluar dari loop jika terjadi error
+        }
+      }
+       header("location: ../transaksi/transaksi.php");
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        echo "Error: " . $sql . "<br>" . $conn->error ;
     }
+  }
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
-<head>+
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>transaksi - Pemandian</title>
@@ -185,61 +206,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div class="form-body">
                           <div class="row">
                             <div class="col-md-4">
-                              <label for="email-horizontal">ID USER</label>
+                              <label for="email-horizontal">NAMA</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="text" id="email-horizontal" class="form-control" name="id_user" placeholder="id user">
+                              <input type="text" id="email-horizontal" class="form-control" name="nama" placeholder="nama">
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">JENIS TIKET</label>
+                              <label for="contact-info-horizontal">DEWASA</label>
                             </div>
                             <div class="col-md-8 form-group">
-                            <div id="input_section">
-                              <select class="form-select" name="jenis_tiket" id="jenis_tiket">
-                                <option value="">Pilih Jenis Tiket</option>
-                                <option value="dewasa">Dewasa</option>
-                                <option value="remaja">Remaja</option>
-                                <option value="anak">Anak-Anak</option>
-                              </select>
-
-                              <div id="input_dewasa" class="input_wrapper" style="display:none;">
-                              <div id="ticket"></div>
-                                <label for="jumlah_dewasa">Jumlah Tiket Dewasa:</label>
-                                <input type="number" name="jumlah_dewasa" id="jumlah_dewasa">
-                              </div>
-
-                              <div id="input_remaja" class="input_wrapper" style="display:none;">
-                                <label for="jumlah_remaja">Jumlah Tiket Remaja:</label>
-                                <input type="number" name="jumlah_remaja" id="jumlah_remaja">
-                              </div>
-
-                              <div id="input_anak" class="input_wrapper" style="display:none;">
-                                <label for="jumlah_anak">Jumlah Tiket Anak-Anak:</label>
-                                <input type="number" name="jumlah_anak" id="jumlah_anak">
-                              </div>
-                            </div>
+                              <input type="number" id="dewasa" class="form-control" name="quantity1" min="0" value="0" onchange="hitungTotal()">
+                              <input type="number" style="display: none;" id="hargaDewasa" class="form-control"  min="0" value="10000" onchange="hitungTotal()"> 
+                              <input type="number" style="display: none;" id="subtotalDewasa" class="form-control"  min="0" value="0" name="sub_total1" onchange="hitungTotal()"> 
+                              <input type="text" style="display: none;" class="form-control"  min="0" value="Dewasa" name="jenis_tiket1" onchange="hitungTotal()"> 
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">TANGGAL PEMESANAN</label>
+                              <label for="contact-info-horizontal">ANAK</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="date" id="contact-info-horizontal" class="form-control" name="tgl_pemesanan" placeholder="tanggal pemesanan">
+                              <input type="number" id="anak" class="form-control" name="quantity2" min="0" value="0" onchange="hitungTotal()">
+                              <input type="number" style="display: none;" id="hargaAnak" class="form-control"  min="0" value="5000" onchange="hitungTotal()">
+                              <input type="number" style="display: none;" id="subtotalAnak" class="form-control"  min="0" value="0" name="sub_total2" onchange="hitungTotal()"> 
+                              <input type="text" style="display: none;" class="form-control"  min="0" value="Anak-Anak" name="jenis_tiket2" onchange="hitungTotal()"> 
                             </div>
                             <div class="col-md-4">
                               <label for="contact-info-horizontal">TOTAL HARGA</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <input type="number" id="total" class="form-control" name="total_harga" placeholder="total harga">
+                              <input type="number" id="total" class="form-control" name="totaltiket" placeholder="total harga" onchange="hitungTotal()" readonly>
                             </div>
                             <div class="col-md-4">
-                              <label for="contact-info-horizontal">METODE PEMBAYARAN</label>
+                              <label for="contact-info-horizontal">LOKET</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <select name="metode_pembayaran" class="form-select" id="">
-                                <option value="">Pilih Metode Pembayaran</option>
-                                <option value="dana">Dana</option>
-                                <option value="gopay">GoPay</option>
-                                <option value="bayar di tempat">bayar di tempat</option>
+                              <select name="metode_pembayaran" class="form-select" id="" required>
+                                <option value="" readonly>Pilih Nomor Loket</option>
+                                <option value="Loket 1">Loket 1</option>
+                                <option value="Loket 2">Loket 2</option>
                               </select>
                               </div>                        
 
@@ -247,7 +250,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               <label for="contact-info-horizontal">STATUS PEMBAYARAN</label>
                             </div>
                             <div class="col-md-8 form-group">
-                              <select name="status" class="form-select" id="">
+                              <select name="status" class="form-select" id="" required>
                                 <option value="">Pilih Status Pembayaran</option>
                                 <option value="done">Sudah Dibayar</option>
                                 <option value="notyet">Belum Dibayar</option>
@@ -292,57 +295,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <script src="../../../public/assets/extensions/apexcharts/apexcharts.min.js"></script>
 <script src="../../../public/assets/js/pages/dashboard.js"></script>
 <script>
-document.getElementById('jenis_tiket').addEventListener('change', function() {
-  var selectedTiket = this.value;
-  
-  // Menyembunyikan semua input yang ada
-  document.querySelectorAll('.input_wrapper').forEach(function(input) {
-    input.style.display = 'none';
-  });
 
-  // Mencari atau membuat div input sesuai dengan jenis tiket yang dipilih
-  var inputDiv = document.getElementById('input_' + selectedTiket);
-  if (!inputDiv && selectedTiket !== '') {
-    inputDiv = document.createElement('div');
-    inputDiv.id = 'input_' + selectedTiket;
-    inputDiv.className = 'input_wrapper';
-    inputDiv.innerHTML = `
-      <label for="jumlah_${selectedTiket}">Jumlah Tiket ${selectedTiket}:</label>
-      <input type="number" name="jumlah_${selectedTiket}" id="jumlah_${selectedTiket}">
-    `;
-    document.getElementById('ticket').append(inputDiv);
-  }
-
-  // Menampilkan input sesuai dengan pilihan tiket
-  if (selectedTiket !== '') {
-    inputDiv.style.display = 'block';
-  }
-
-  // Menyembunyikan option yang sudah dipilih
-  document.querySelectorAll('option').forEach(function(option) {
-    if (option.value === selectedTiket) {
-      option.style.display = 'none';
-    }
-  });
-});
-
-    function onSubmit(token) {
+  function onSubmit(token) {
      document.getElementById("form").submit();
    }
-   function hitungTotal() {
-        var dewasa = document.getElementById("dewasa").value;
-        var hargaDewasa = document.getElementById("hargaDewasa").value;
-        var remaja = document.getElementById("remaja").value;
-        var hargaRemaja = document.getElementById("hargaRemaja").value;
-        var anak = document.getElementById("anak").value;
-        var hargaAnak = document.getElementById("hargaAnak").value;
-        var totalDewasa = dewasa * hargaDewasa;
-        var totalRemaja = remaja * hargaRemaja;
-        var totalAnak = anak * hargaAnak;
-        var total = totalDewasa + totalRemaja + totalAnak;
+  function hitungTotal() {
+    // Calculate subtotal for each ticket type
+    let dewasa = document.getElementById("dewasa").value;
+    let hargadewasa = document.getElementById("hargaDewasa").value;
+    let anak = document.getElementById("anak").value;
+    let hargaanak = document.getElementById("hargaAnak").value;
 
-        document.getElementById("total").value = total;
-    }
+    let sub_totalDewasa = dewasa * hargadewasa;
+    let sub_totalAnak = anak * hargaanak;
+
+    // Update the subtotals in the input fields
+    document.getElementById("subtotalDewasa").value = sub_totalDewasa;
+    document.getElementById("subtotalAnak").value = sub_totalAnak;
+
+    // Calculate the total
+    let total = sub_totalDewasa + sub_totalAnak;
+
+    // Update the total in the input field
+    document.getElementById("total").value = total;
+}
  </script>
 </body>
 

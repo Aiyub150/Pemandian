@@ -1,32 +1,34 @@
-// Function to export table data to Excel
-function exportToExcel(tableId, filename = ''){
+function exportToExcel(tableId, filename = '') {
     var downloadLink;
     var dataType = 'application/vnd.ms-excel';
     var tableSelect = document.getElementById(tableId);
+
+    // Simpan kolom "action"
+    var actionColumn = tableSelect.querySelector('.action-column');
+    var actionColumnIndex = actionColumn.cellIndex;
+
+    // Sembunyikan kolom "action"
+    actionColumn.style.display = 'none';
+
     var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
-    
-    // Specify file name
-    filename = filename?filename+'.xls':'excel_data.xls';
-    
-    // Create download link element
+
+    // Kembalikan tampilan kolom "action"
+    actionColumn.style.display = '';
+
+    filename = filename ? filename + '.xls' : 'excel_data.xls';
+
     downloadLink = document.createElement("a");
-    
+
     document.body.appendChild(downloadLink);
-    
-    if(navigator.msSaveOrOpenBlob){
+
+    if (navigator.msSaveOrOpenBlob) {
         var blob = new Blob(['\ufeff', tableHTML], {
             type: dataType
         });
-        navigator.msSaveOrOpenBlob( blob, filename);
-    }else{
-        // Create a link to the file
+        navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
         downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-    
-        // Setting the file name
         downloadLink.download = filename;
-        
-        //triggering the function
         downloadLink.click();
     }
 }
-

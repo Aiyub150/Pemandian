@@ -174,9 +174,10 @@ $result = $conn->query($sql);
                             <table class="table mb-0 table-lg">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
                                         <th>ID TRANSAKSI</th>              
-                                        <th>ID TIKET</th>
+                                        <th>JENIS TIKET</th>
+                                        <th>QUANTITY</th>
+                                        <th>SUB TOTAL</th>
                                         <th colspan="2">ACTION</th>
                                     </tr>
                                 </thead>
@@ -185,7 +186,6 @@ $result = $conn->query($sql);
                                     if ($result->num_rows > 0) {
                                         while ($row = $result->fetch_assoc()) {
                                             echo "<tr>";
-                                            echo "<td>" . $row["id_detail_transaksi"] . "</td>";
                                             echo "<td>" . $row["id_transaksi"] . "</td>";
                                             echo "<td>" . $row["jenis_tiket"] . "</td>";
                                             echo "<td>" . $row["quantity"] . "</td>";

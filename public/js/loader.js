@@ -5,4 +5,4 @@ setTimeout(function() {
     setTimeout(function() {
         loaderContainer.style.display = 'none'; // Sembunyikan loader setelah transisi selesai
     }, 1000); // Waktu transisi fade out
-}, 3000); // Waktu jeda sebelum memulai transisi
+}, 1000); // Waktu jeda sebelum memulai transisi

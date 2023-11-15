@@ -17,7 +17,7 @@
   <div class="login-form">
     <div class="login-form-inner">
       <div class="logo">
-          <img src="../../public/img/logo_pemandian_transparant.png" alt="" style="width: 200px; height: 50px; margin-left: 70px;">
+          <img src="../../public/img/logo_pemandian_transparant.png" alt="" style="width: 200px; height: 80px; margin-left: 70px;">
         </div>
       <h1>Lupa Password</h1>
       <p class="body-text">Silahkan masukkan referensi email anda terlebih dahulu.</p>

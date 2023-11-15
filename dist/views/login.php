@@ -3,11 +3,7 @@ require '../app/config.php';
 session_start();
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Secret Key ini kita ambil dari halaman Google reCaptcha
-    // Sesuai pada catatan saya di STEP 1 nomor 6
     $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
-    // Disini kita akan melakukan komunkasi dengan google recpatcha
-    // dengan mengirimkan scret key dan hasil dari response recaptcha nya
     $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
     $response = json_decode($verify);
     if($response == true){
@@ -62,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <div class="login-form">
     <div class="login-form-inner">
       <div class="logo">
-          <img src="../../public/img/logo_pemandian_transparant.png" alt="" style="width: 200px; height: 50px; margin-left: 70px;">
+          <img src="../../public/img/logo_pemandian_transparant.png" alt="" style="width: 200px; height: 80px; margin-left: 70px;">
         </div>
       <h1>Login</h1>
       <p class="body-text">Silahkan login terlebih dahulu.</p>

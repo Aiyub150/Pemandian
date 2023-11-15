@@ -14,7 +14,18 @@ header('Location: ../index.php'); exit();
 
 require '../../app/config.php';
 
-$sql = "SELECT * FROM transaksi INNER JOIN users ON transaksi.id_user=users.id_user ORDER BY tgl_pemesanan DESC";
+$filter = isset($_GET['filter']) ? $_GET['filter'] : 'yearly';
+$dateInput = isset($_GET['dateInput']) ? $_GET['dateInput'] : date('Y');
+
+// Menghitung tanggal awal dan akhir berdasarkan filter
+$startDate = date('Y-01-01', strtotime($dateInput));
+$endDate = date('Y-12-31', strtotime($dateInput));
+
+// Query untuk mengambil data sesuai dengan filter
+$sql = "SELECT * FROM transaksi 
+        INNER JOIN users ON transaksi.id_user = users.id_user 
+        WHERE tgl_pemesanan BETWEEN '$startDate' AND '$endDate'";
+
 $result = $conn->query($sql);
 ?>
 <style>
@@ -88,7 +99,7 @@ $result = $conn->query($sql);
             </a>
             <ul class="submenu">
                 <li class="submenu-item active">
-                    <a href="#">Transaksi</a>
+                    <a href="transaksi.php">Transaksi</a>
                 </li>
                 <li class="submenu-item">
                     <a href="../tiket/tiket.php">Tiket</a>
@@ -152,24 +163,26 @@ $result = $conn->query($sql);
             </header>
             
 <div class="page-heading">
-    <h3>Tiket - Transaksi</h3>
+    <h3>Tiket - Laporan <?php echo $filter ?></h3>
 </div>
 <div class="page-content">
     <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Tabel Transaksi</h4>
+                        <h4 class="card-title">Tabel Laporan <?php echo $filter ?></h4>
                     </div>
                     <div class="card-content">
-                        <div class="card-body">
-                            
-                            <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
-                            <button onclick="printTable('dataTable')" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
-                            <a href="laporan_harian.php" class="btn btn-primary">Laporan Harian</a>
-                            <a href="laporan_bulanan.php" class="btn btn-primary">Laporan Bulanan</a>
-                            <a href="laporan_tahunan.php" class="btn btn-primary">Laporan Tahunan</a>
-                            <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
-                        </div>
+                    <div class="card-body">
+                        <a href="transaksi.php" class="btn btn-danger">Kembali</a>
+                        <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
+                        <button onclick="printTable('dataTable')" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
+                        <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
+                        <form method="get" action="" style="margin-top: 20px;">
+                            <label for="dateInput">Pilih Tahun:</label>
+                            <input type="number" id="dateInput" name="dateInput" value="<?= $dateInput ?>" class="form-control" placeholder="Masukkan tahun">
+                            <button type="submit" class="btn btn-primary mt-2">Filter</button>
+                        </form>
+                    </div>
 
                         <!-- Table with no outer spacing -->
                         <div class="table-responsive">
@@ -252,7 +265,7 @@ $result = $conn->query($sql);
     <script src="../../../public/assets/js/bootstrap.js"></script>
     <script src="../../../public/assets/js/app.js"></script>
     <script src="../../../public/js/exportToExcel.js"></script>
-    <script src="../../../public/j  s/exportToPDF.js"></script>
+    <script src="../../../public/js/exportToPDF.js"></script>
     <script src="../../../public/js/print.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
@@ -267,12 +280,6 @@ $result = $conn->query($sql);
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="../../../public/js/sweetalert.js"></script>
-<script>
-function applyFilter(filter) {
-    window.location.href = 'laporan.php?filter=' + filter;
-}
-
-</script>
 </body>
 
 </html>
