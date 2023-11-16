@@ -144,7 +144,7 @@
             <p>Metode Pembayaran</p>
             <select class="inputbox" name="metode_pembayaran" id="card_type" required>
               <option value="">--Pilih Metode Pembayaran--</option>
-              <option value="Dana">Dana</option>
+              <option value="Qris">Scan Code Qris</option>
               <option value="Bayar Di Loket">Bayar Di Loket</option>
             </select>
             <p>Bukti Pembayaran</p>
@@ -175,32 +175,42 @@
         data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
         data-callback='onSubmit' 
         data-action='submit' value="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2">
+        <div id="qrcode-container" class="hidden"></div>
+          <div id="popup" class="popup">
+          <div class="popup-content">
+            <span class="close" onclick="tutupPopup()">&times;</span>
+            <img src="../../../public/img/logo_pemandian_transparant.png" alt="..."  style="width: 300px; height: 100px; "/>
+            <h2 style="text-align: center;">Nota Pembayaran</h2>
+            <p style="text-align: center;">Atas Nama <?php echo $_SESSION['nama'] ?></p>
+            <p style="margin-top: 20px;">Dewasa : <span id="notaDewasa"></span></p>
+            <p>Anak-Anak : <span id="notaAnak"></span></p>
+            <p>Total : <span id="notaTotal"></span></p>
+            <p>Metode Pembayaran : <span id="metodePembayaran"></span></p>
+            <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Harap untuk melakukan Screenshot pada nota pembayaran sebelum memesan tiket</p>
+            <!-- Tambahan informasi atau elemen nota pembayaran lainnya bisa ditambahkan di sini -->
+            <button type="submit" class="button">Pesan Sekarang</button>
+          </div>
+        </div>
           </form>
-          <button onclick="tampilkanPopup()" class="button"><i class="fa fa-ticket" aria-hidden="true"></i> Pesan Sekarang</button>
+          <button onclick="tampilkanPopup()" class="button"><i class="fa fa-ticket" aria-hidden="true"></i> Buat Nota Pembayaran</button>
         </div>
       </div>
     </div>
-  <div id="popup" class="popup">
-  <div class="popup-content">
-    <span class="close" onclick="tutupPopup()">&times;</span>
-    <h2>Nota Pembayaran</h2>
-    <p>Dewasa: <span id="notaDewasa"></span></p>
-    <p>Anak-Anak: <span id="notaAnak"></span></p>
-    <p>Total: <span id="notaTotal"></span></p>
-    <!-- Tambahan informasi atau elemen nota pembayaran lainnya bisa ditambahkan di sini -->
-    <button onclick="tutupPopup()">Tutup</button>
-  </div>
-</div>
+
   <script src='https://www.google.com/recaptcha/api.js?render=6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2'></script>
+  <!-- <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script> -->
+
   <script>
 function tampilkanPopup() {
     let notaDewasa = document.getElementById("subtotalDewasa").value;
     let notaAnak = document.getElementById("subtotalAnak").value;
     let total = document.getElementById("total").value;
+    let metode_pembayaran = document.getElementById("card_type").value;
 
     document.getElementById("notaDewasa").textContent = "Rp. " + notaDewasa;
     document.getElementById("notaAnak").textContent = "Rp. " + notaAnak;
     document.getElementById("notaTotal").textContent = "Rp. " + total;
+    document.getElementById("metodepembayaran").textContent = metode_pembayaran;
 
     // Menampilkan popup
     document.getElementById("popup").style.display = "block";
@@ -278,21 +288,48 @@ function tampilkanPopup() {
 //   }
 function tampilkanPopup() {
     let notaDewasa = document.getElementById("subtotalDewasa").value;
-    let notaRemaja = document.getElementById("subtotalRemaja").value;
     let notaAnak = document.getElementById("subtotalAnak").value;
     let total = document.getElementById("total").value;
+    let metode_Pembayaran = document.getElementById("card_type").value;
 
     document.getElementById("notaDewasa").textContent = "Rp. " + notaDewasa;
-    document.getElementById("notaRemaja").textContent = "Rp. " + notaRemaja;
     document.getElementById("notaAnak").textContent = "Rp. " + notaAnak;
     document.getElementById("notaTotal").textContent = "Rp. " + total;
+    document.getElementById("metodePembayaran").textContent = metode_Pembayaran;
 
+    // Check if the selected payment method is "Qris"
+    
+    // if (metodePembayaran === "Qris") {
+    //   // Generate QR code
+    //   generateQRCode();
+
+    //   // Show QR code container
+    //   document.getElementById("qrcode-container").classList.remove("hidden");
+    // } else {
+    //   // Hide QR code container
+    //   document.getElementById("qrcode-container").classList.add("hidden");
+    // }
+
+    // Show the existing popup
     document.getElementById("popup").style.display = "block";
-}
+  }
 
-function tutupPopup() {
+  // // Function to generate QR code
+  // function generateQRCode() {
+  //   let qrcode = new QRCode(document.getElementById("qrcode-container"), {
+  //     text: "Your_QR_Code_Data_Here", // Replace with your actual QR code data
+  //     width: 128,
+  //     height: 128,
+  //   });
+  // }
+
+  function tutupPopup() {
+    // Hide the QR code container
+    document.getElementById("qrcode-container").classList.add("hidden");
+
+    // Hide the existing popup
     document.getElementById("popup").style.display = "none";
-}
+  }
 
   </script>  
   <script src='https://www.google.com/recaptcha/api.js?render=6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2'></script>

@@ -1,15 +1,11 @@
 <?php
+session_start();
 
-session_start(); // Pastikan Anda memulai sesi sebelum mengakses $_SESSION
-
-if(isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')){
-
-// Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
-
+if (isset($_SESSION['level']) && ($_SESSION['level'] == '1' || $_SESSION['level'] == '2')) {
+    // Pengguna dengan level 1 atau 2 diizinkan mengakses dashboard.php
 } else {
-
-header('Location: ../index.php'); exit();
-
+    header('Location: ../index.php');
+    exit();
 }
 
 require '../../app/config.php';
@@ -17,17 +13,37 @@ require '../../app/config.php';
 $filter = isset($_GET['filter']) ? $_GET['filter'] : 'yearly';
 $dateInput = isset($_GET['dateInput']) ? $_GET['dateInput'] : date('Y');
 
-// Menghitung tanggal awal dan akhir berdasarkan filter
-$startDate = date('Y-01-01', strtotime($dateInput));
-$endDate = date('Y-12-31', strtotime($dateInput));
+$startDate = $endDate = $dateInput;
 
-// Query untuk mengambil data sesuai dengan filter
-$sql = "SELECT * FROM transaksi 
-        INNER JOIN users ON transaksi.id_user = users.id_user 
-        WHERE tgl_pemesanan BETWEEN '$startDate' AND '$endDate'";
+// Query untuk mengambil data Dewasa
+$sql = "SELECT jenis_tiket, SUM(quantity) AS total_quantity, DATE_FORMAT(transaksi.tgl_pemesanan, '%Y') AS year
+        FROM detail_transaksi 
+        INNER JOIN transaksi ON detail_transaksi.id_transaksi = transaksi.id_transaksi
+        WHERE DATE_FORMAT(transaksi.tgl_pemesanan, '%Y') = '$startDate'
+        GROUP BY jenis_tiket, year";
 
 $result = $conn->query($sql);
+
+$chartData = array();
+
+// Inisialisasi data default
+$labels = ['Dewasa', 'Anak-Anak'];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        // Create a new array for each jenis_tiket
+        $chartData[] = [
+            'jenis_tiket' => $row['jenis_tiket'],
+            'total_quantity' => $row['total_quantity'],
+            'year' => $row['year'],
+        ];  
+        $labels_json = json_encode($labels);
+        $chartData_json = json_encode($chartData);      
+    }
+}
 ?>
+
+
 <style>
     .hidden{
         display: none;
@@ -42,6 +58,7 @@ $result = $conn->query($sql);
     <title>transaksi - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app-dark.css">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.svg" type="image/x-icon">
@@ -163,73 +180,29 @@ $result = $conn->query($sql);
             </header>
             
 <div class="page-heading">
-    <h3>Tiket - Laporan <?php echo $filter ?></h3>
+    <h3>Tiket - Laporan Tahunan</h3>
 </div>
 <div class="page-content">
     <section class="row">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Tabel Laporan <?php echo $filter ?></h4>
+                        <h4 class="card-title">Tabel Laporan Tahunan</h4>
                     </div>
                     <div class="card-content">
                     <div class="card-body">
                         <a href="transaksi.php" class="btn btn-danger">Kembali</a>
                         <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
                         <button onclick="printTable('dataTable')" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
-                        <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
                         <form method="get" action="" style="margin-top: 20px;">
                             <label for="dateInput">Pilih Tahun:</label>
-                            <input type="number" id="dateInput" name="dateInput" value="<?= $dateInput ?>" class="form-control" placeholder="Masukkan tahun">
+                            <input type="year" id="dateInput" name="dateInput" value="<?= $dateInput ?>" class="form-control">
                             <button type="submit" class="btn btn-primary mt-2">Filter</button>
                         </form>
                     </div>
 
                         <!-- Table with no outer spacing -->
                         <div class="table-responsive">
-                            <table class="table mb-0 table-lg" id="dataTable">
-                                <thead>
-                                    <tr>
-                                        <th>ID TRANSAKSI</th>
-                                        <th>NAMA</th>
-                                        <th>TGL PEMESANAN</th>
-   										<th>TOTAL</th>
-                                        <th>METODE PEMBAYARAN</th>
-                                        <th>BUKTI PEMBAYARAN</th>
-                                        <th>STATUS</th>
-                                        <th colspan="3" style="text-align: center;">ACTION</th>
-                                    </tr>
-                                </thead>
-                                <tbody> 
-                                <?php
-                                    if ($result->num_rows > 0) {
-                                        while ($row = $result->fetch_assoc()) {
-                                            echo "<tr>";
-                                            echo "<td>" . $row["id_transaksi"] . "</td>";
-                                            echo "<td>" . $row["nama"] . "</td>";
-                                            echo "<td>" . $row["tgl_pemesanan"] . "</td>";
-                                            echo "<td>" . $row["total_harga"] . "</td>";
-                                            echo "<td>" . $row["metode_pembayaran"] . "</td>";
-                                            echo "<td><img style='width: 200px; height: 200px;' src='../../app/payment/" . $row["bukti_pembayaran"] . "' alt=' Bayar Di Loket    '></td>";
-                                            echo "<td>"; 
-                                            $status = $row["status"];
-                                            if($status == 'done'){
-                                                echo "<i class='fa fa-check-square' aria-hidden='true' style='color: green;'></i> Sudah Dibayar";
-                                            } else {
-                                                echo "<i class='fa fa-window-close' aria-hidden='true' style='color: red;'></i> Belum Dibayar";
-                                            }
-                                            echo "</td>";
-                                            echo '<td><a class="btn icon btn-primary" href="update.php?id=' . $row["id_transaksi"] . '"><i class="bi bi-pencil"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-danger" href="delete.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-trash"></i></a></td>';
-                                            echo '<td><a class="btn icon btn-warning" href="../detail_transaksi/detail_transaksi.php?id=' . $row["id_transaksi"] . '"><i class="fa fa-list"></i></a></td>';
-                                            echo "</tr>";
-                                        }
-                                    } else {
-                                        echo "<tr><td colspan='7' style='text-align: center;'>Tidak ada data.</td></tr>";
-                                    }
-                                ?>
-
-                                </tbody>
-                            </table>
+                            <canvas id="myChart" width="100px" height="100px"></canvas>
                         </div>
                     </div>
                 </div>
@@ -279,7 +252,63 @@ $result = $conn->query($sql);
 
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
 <script src="../../../public/js/sweetalert.js"></script>
+<script>
+// Convert PHP data to JavaScript
+const labels = <?php echo json_encode($labels); ?>;
+const chartData = <?php echo json_encode($chartData); ?>;
+
+// Urutkan dataset dari kiri ke kanan
+chartData.reverse();
+
+// Filter data untuk memisahkan Dewasa dan Anak-Anak
+const filteredData = chartData.reduce((acc, data) => {
+  if (!acc[data.year]) {
+    acc[data.year] = [];
+  }
+  acc[data.year].push(data);
+  return acc;
+}, {});
+
+// Atur format dataset
+const datasets = Object.values(filteredData).map((data, index) => {
+  const dataset = {
+    label: 'data tahun ' + data[0].year,
+    data: data.map(item => item.total_quantity),
+    borderColor: index % 2 === 0 ? 'red' : 'blue',
+    backgroundColor: index % 2 === 0 ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 0, 255, 0.5)',
+  };
+  return dataset;
+});
+
+const data = {
+  labels: labels,
+  datasets: datasets,
+};
+
+// Get the canvas element
+const ctx = document.getElementById('myChart').getContext('2d');
+
+// Create the chart using the canvas element
+const myChart = new Chart(ctx, {
+  type: 'bar',
+  data: data,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
+</script>
+
+
+
+
 </body>
 
 </html>

@@ -35,7 +35,9 @@ if ($result->num_rows > 0) {
         $chartData[] = [
             'jenis_tiket' => $row['jenis_tiket'],
             'total_quantity' => $row['total_quantity']
-        ];        
+        ];  
+        $labels_json = json_encode($labels);
+        $chartData_json = json_encode($chartData);      
     }
 }
 
@@ -57,6 +59,7 @@ if ($result->num_rows > 0) {
     <title>transaksi - Pemandian</title>
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="">
     <link rel="stylesheet" href="../../../public/assets/css/main/app.css">
     <link rel="stylesheet" href="../../../public/assets/css/main/app-dark.css">
     <link rel="shortcut icon" href="../../../public/assets/images/logo/favicon.svg" type="image/x-icon">
@@ -191,7 +194,6 @@ if ($result->num_rows > 0) {
                         <a href="transaksi.php" class="btn btn-danger">Kembali</a>
                         <a href="tambah.php" class="btn icon icon-left btn-primary">+ tambah data</a>
                         <button onclick="printTable('dataTable')" class="btn btn-primary"><i class="fa fa-print" aria-hidden="true"></i> Print</button>
-                        <input class="form-control" type="text" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Transaksi..">
                         <form method="get" action="" style="margin-top: 20px;">
                             <label for="dateInput">Pilih Tanggal:</label>
                             <input type="date" id="dateInput" name="dateInput" value="<?= $dateInput ?>" class="form-control">
@@ -201,7 +203,7 @@ if ($result->num_rows > 0) {
 
                         <!-- Table with no outer spacing -->
                         <div class="table-responsive">
-                            <canvas id="myChart" width="50" height="50"></canvas>
+                            <canvas id="myChart" width="100px" height="100px"></canvas>
                         </div>
                     </div>
                 </div>
@@ -252,45 +254,58 @@ if ($result->num_rows > 0) {
 <!-- SweetAlert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.min.js"></script>
 <script src="../../../public/js/sweetalert.js"></script>
 <script>
-// PHP data to JavaScript
-let labels = <?php echo json_encode($labels); ?>;
-let chartData = <?php echo json_encode($chartData); ?>;
+// Convert PHP data to JavaScript
+const labels = <?php echo json_encode($labels); ?>;
+const chartData = <?php echo json_encode($chartData); ?>;
 
-// Extracting data for 'Dewasa' and 'Anak-Anak'
-let dataDewasa = chartData.find(item => item.jenis_tiket === 'Dewasa');
-let dataAnak = chartData.find(item => item.jenis_tiket === 'Anak-Anak');
+// Urutkan dataset dari kiri ke kanan
+chartData.reverse();
 
-// Initialize Chart.js
-let ctx = document.getElementById('myChart').getContext('2d');
-let myChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: labels,
-        datasets: [{
-            label: 'Dewasa',
-            data: [dataDewasa ? dataDewasa.total_quantity : 0], // Check if data is available
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1
-        }, {
-            label: 'Anak-Anak',
-            data: [dataAnak ? dataAnak.total_quantity : 0], // Check if data is available
-            backgroundColor: 'rgba(54, 162, 235, 0.5)',
-            borderColor: 'rgba(54, 162, 235, 1)',
-            borderWidth: 1
-        }]
+const datasets = chartData.map((data, index) => {
+  const dataset = {
+    label: data.jenis_tiket === 'Dewasa' ? 'Dewasa' : 'Anak-Anak',
+    data: [data.total_quantity],
+    borderColor: data.jenis_tiket === 'Dewasa' ? 'red' : 'blue',
+    backgroundColor: data.jenis_tiket === 'Dewasa' ? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 0, 255, 0.5)',
+  };
+  return dataset;
+});
+
+const data = {
+  labels: labels,
+  datasets: [
+    {
+      label: 'Data Transaksi Tanggal <?php echo $dateInput ?> ',
+      data: datasets.reduce((acc, dataset) => acc.concat(dataset.data), []),
+      borderColor: 'black', // Pilih warna sesuai kebutuhan
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Pilih warna sesuai kebutuhan
     },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
+  ],
+};
+
+// Get the canvas element
+const ctx = document.getElementById('myChart').getContext('2d');
+
+// Create the chart using the canvas element
+const myChart = new Chart(ctx, {
+  type: 'bar',
+  data: data,
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
     }
+  }
 });
 </script>
+
+
+
 </body>
 
 </html>
