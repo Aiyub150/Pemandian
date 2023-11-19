@@ -140,9 +140,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <li class="submenu-item">
                     <a href="../transaksi/transaksi.php">Transaksi</a>
                 </li>
-                <li class="submenu-item">
-                    <a href="../tiket/tiket.php">Tiket</a>
-                </li>
             </ul>
         </li>
         <li
@@ -176,16 +173,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <span><?= $_SESSION['username'] ?></span>
                 </a>
             </li>
-            <li 
+            <!-- <li 
                 class="sidebar-item">
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-cogs" aria-hidden="true"></i>
                     <span>Pengaturan</span>
                 </a>
-            </li>
+            </li> -->
             <li 
                 class="sidebar-item">
-                <a href="../login.php" class='sidebar-link'>
+                <a href="../logout.php" class='sidebar-link'>
                     <i class="bi bi-door-open"></i>
                     <span>Logout</span>
                 </a>

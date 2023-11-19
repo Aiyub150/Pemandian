@@ -155,9 +155,6 @@ if ($hasila && $hasila->num_rows > 0) {
                 <li class="submenu-item">
                     <a href="../transaksi/transaksi.php">Transaksi</a>
                 </li>
-                <li class="submenu-item">
-                    <a href="../tiket/tiket.php">Tiket</a>
-                </li>
             </ul>
         </li>
         <li
@@ -196,13 +193,13 @@ if ($hasila && $hasila->num_rows > 0) {
                     <span><?= $_SESSION['username'] ?></span>
                 </a>
             </li>
-            <li 
+            <!-- <li 
                 class="sidebar-item">
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-cogs" aria-hidden="true"></i>
                     <span>Pengaturan</span>
                 </a>
-            </li>
+            </li> -->
             <li 
                 class="sidebar-item">
                 <a href="../logout.php" class='sidebar-link'>

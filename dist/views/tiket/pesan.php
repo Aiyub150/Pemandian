@@ -4,101 +4,100 @@
         header('Location: ../login.php');
         exit();
     } else {
-      require '../../app/config.php';
+        require '../../app/config.php';
+        $sql_max_id = $conn->query("SELECT MAX(id_transaksi) as max_id FROM transaksi;");
+        $result_max_id = $sql_max_id->fetch_assoc();
+        $maksimalid = $result_max_id["max_id"];
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
+            // Disini kita akan melakukan komunikasi dengan google recaptcha
+            // dengan mengirimkan scret key dan hasil dari response recaptcha nya
+            $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
+            $response = json_decode($verify);
+            if($response == true){
+                $sql = $conn->query("SELECT MAX(id_transaksi) as max_id FROM transaksi;");
+                $result = $sql->fetch_assoc();
+                $id_transaksi =  $result["max_id"] + 1;
+                $id_user = $_SESSION['id_user'];
+                $tgl_pemesanan = date('Y-m-d');
+                $total_harga = $_POST['totaltiket'];
+                $metode_pembayaran = $_POST['metode_pembayaran'];
+                $status = "";
 
-      if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        $secret_key = "6LcUfDsoAAAAAOuwYSk9i_ZoQwCgIexCeVMJ31Vb";
-        // Disini kita akan melakukan komunkasi dengan google recpatcha
-        // dengan mengirimkan scret key dan hasil dari response recaptcha nya
-        $verify = file_get_contents('https://www.google.com/recaptcha/api/siteverify?secret='.$secret_key.'&response='.$_POST['token']);
-        $response = json_decode($verify);
-        if($response == true){
-          $sql = $conn->query("SELECT MAX(id_transaksi) as max_id FROM transaksi;");
-          $result = $sql->fetch_assoc();
-          $id_transaksi =  $result["max_id"] + 1;
-          $id_user = $_SESSION['id_user'];
-          $tgl_pemesanan = date('Y-m-d');
-          $total_harga = $_POST['totaltiket'];
-          $metode_pembayaran = $_POST['metode_pembayaran'];
-          $status = "";
-          if($status == null){
-            $status = "notyet";
-          }          
-            // Mengelola unggahan gambar
-            $target_dir = "../../app/payment/";  // Sesuaikan dengan path folder Anda
-            $target_file = $target_dir . basename($_FILES["bukti_pembayaran"]["name"]);
-            $uploadOk = 1;
-            $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-  
-            // Validasi gambar
-            if(isset($_POST["submit"])) {
-                $check = getimagesize($_FILES["bukti_pembayaran"]["tmp_name"]);
-                if($check !== false) {
-                    echo "File adalah gambar - " . $check["mime"] . ".";
-                    $uploadOk = 1;
-                } else {
-                    echo "File bukan gambar.";
-                    $uploadOk = 0;
+                if($status == null){
+                    $status = "notyet";
                 }
-            }
-  
-            // Periksa ukuran file
-            if ($_FILES["bukti_pembayaran"]["size"] > 500000) {
-                echo "Maaf, ukuran file terlalu besar.";
-                $uploadOk = 0;
-            }
-  
-            // Izinkan beberapa tipe file
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-            && $imageFileType != "gif" ) {
-                $uploadOk = 0;
-            }
-  
-            // Periksa jika $uploadOk tidak berubah menjadi 0 oleh kesalahan
-            if ($uploadOk == 0) {
-                echo "Maaf, file tidak terunggah.";
-            // Jika semuanya beres, coba untuk mengunggah file
-            } else {
-                if (move_uploaded_file($_FILES["bukti_pembayaran"]["tmp_name"], $target_file)) {
-                    echo "File ". htmlspecialchars( basename( $_FILES["bukti_pembayaran"]["name"])). " sudah terunggah.";
-  
-                    // Setelah gambar berhasil diunggah, Anda dapat menyimpan nama file di database.
-                    $nama_gambar = basename($_FILES["bukti_pembayaran"]["name"]);
-                    if($nama_gambar == null){
-                      $nama_gambar = "Bayar Di Loket";
+
+                // Set nilai default untuk nama gambar
+                $nama_gambar = "Bayar Di Loket";
+
+                // Mengelola unggahan gambar
+                if(isset($_FILES["bukti_pembayaran"]) && $_FILES["bukti_pembayaran"]["error"] == 0){
+                    $target_dir = "../../app/payment/";  // Sesuaikan dengan path folder Anda
+                    $target_file = $target_dir . basename($_FILES["bukti_pembayaran"]["name"]);
+                    $uploadOk = 1;
+                    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+                    // Validasi gambar
+                    $check = getimagesize($_FILES["bukti_pembayaran"]["tmp_name"]);
+                    if($check !== false) {
+                        echo "File adalah gambar - " . $check["mime"] . ".";
+                        $uploadOk = 1;
+                    } else {
+                        echo "File bukan gambar.";
+                        $uploadOk = 0;
                     }
-                    $transaksi = "INSERT INTO transaksi (id_transaksi, id_user, tgl_pemesanan, total_harga, metode_pembayaran, bukti_pembayaran, status) VALUES ('$id_transaksi', '$id_user', '$tgl_pemesanan', '$total_harga', '$metode_pembayaran', '$nama_gambar','$status')";
-                    if ($conn->query($transaksi) === true) {
-                      // Lakukan loop untuk memasukkan data-detail tiket sebanyak tiga kali
-                      for ($i = 1; $i <= 2; $i++) {
+
+                    // Periksa ukuran file
+                    if ($_FILES["bukti_pembayaran"]["size"] > 500000) {
+                        echo "Maaf, ukuran file terlalu besar.";
+                        $uploadOk = 0;
+                    }
+
+                    // Izinkan beberapa tipe file
+                    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+                        && $imageFileType != "gif" ) {
+                        $uploadOk = 0;
+                    }
+
+                    // Periksa jika $uploadOk tidak berubah menjadi 0 oleh kesalahan
+                    if ($uploadOk == 0) {
+                        echo "Maaf, file tidak terunggah.";
+                    } else {
+                        if (move_uploaded_file($_FILES["bukti_pembayaran"]["tmp_name"], $target_file)) {
+                            echo "File ". htmlspecialchars( basename( $_FILES["bukti_pembayaran"]["name"])). " sudah terunggah.";
+                            $nama_gambar = basename($_FILES["bukti_pembayaran"]["name"]);
+                        } else {
+                            echo "Maaf, terjadi kesalahan saat mengunggah file.";
+                        }
+                    }
+                }
+
+                // Setelah gambar berhasil diunggah atau tidak, Anda dapat menyimpan data ke dalam database.
+                $transaksi = "INSERT INTO transaksi (id_transaksi, id_user, tgl_pemesanan, total_harga, metode_pembayaran, bukti_pembayaran, status) VALUES ('$id_transaksi', '$id_user', '$tgl_pemesanan', '$total_harga', '$metode_pembayaran', '$nama_gambar','$status')";
+
+                if ($conn->query($transaksi) === true) {
+                    // Lakukan loop untuk memasukkan data-detail tiket sebanyak tiga kali
+                    for ($i = 1; $i <= 2; $i++) {
                         $jenis_tiket = $_POST['jenis_tiket'.$i];
                         $quantity = $_POST['quantity'.$i];
                         $sub_total = $_POST['sub_total'.$i];
                         $detail_transaksi = "INSERT INTO detail_transaksi (id_transaksi, jenis_tiket, quantity, sub_total) VALUES ('$id_transaksi', '$jenis_tiket', '$quantity', '$sub_total')";
                         
                         if ($conn->query($detail_transaksi) !== true) {
-                          echo "Error: " . $conn->error;
-                          break; // Keluar dari loop jika terjadi error
+                            echo "Error: " . $conn->error;
+                            break; // Keluar dari loop jika terjadi error
                         }
-                      }
-                       header("location: ../transaksi/transaksi.php");
-                    } else {
-                        echo "Error: " . $sql . "<br>" . $conn->error ;
                     }
-                    // Tambahkan kode untuk menyimpan $nama_gambar ke dalam database.
-                    // Contoh: 
-                    // $sql = "INSERT INTO nama_tabel (kolom_gambar) VALUES ('$nama_gambar')";
-                    // $conn->query($sql);
-                    
+                    header("location: ../transaksi/transaksi.php");
                 } else {
-                    echo "Maaf, terjadi kesalahan saat mengunggah file.";
+                    echo "Error: " . $sql . "<br>" . $conn->error ;
                 }
             }
-          
         }
-      }
     }
 ?>
+
 
 <style>
   .hidden {
@@ -148,7 +147,7 @@
               <option value="Bayar Di Loket">Bayar Di Loket</option>
             </select>
             <p>Bukti Pembayaran</p>
-            <input type="file" id="gambar" class="inputbox" name="bukti_pembayaran" required/>
+            <input type="file" id="gambar" class="inputbox" name="bukti_pembayaran" />
             <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Jika bayar di loket, anda tidak perlu mengupload bukti pembayaran</p>
           <h2>Total</h2>
           <table>
@@ -175,17 +174,22 @@
         data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
         data-callback='onSubmit' 
         data-action='submit' value="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2">
-        <div id="qrcode-container" class="hidden"></div>
           <div id="popup" class="popup">
           <div class="popup-content">
             <span class="close" onclick="tutupPopup()">&times;</span>
-            <img src="../../../public/img/logo_pemandian_transparant.png" alt="..."  style="width: 300px; height: 100px; "/>
+            <img src="../../../public/img/logo_pemandian_transparant.png" alt="..."
+            style="width: 300px; height: 100px; display: block; margin-left: auto; margin-right: auto;"/>
             <h2 style="text-align: center;">Nota Pembayaran</h2>
             <p style="text-align: center;">Atas Nama <?php echo $_SESSION['nama'] ?></p>
-            <p style="margin-top: 20px;">Dewasa : <span id="notaDewasa"></span></p>
+            <p style="margin-top: 20px;">No. Nota Pembayaran: <?php echo $maksimalid ?></p>
+            <p>Dewasa : <span id="notaDewasa"></span></p>
             <p>Anak-Anak : <span id="notaAnak"></span></p>
             <p>Total : <span id="notaTotal"></span></p>
             <p>Metode Pembayaran : <span id="metodePembayaran"></span></p>
+            <div id="qrcode-container" class="hidden" style="text-align: center;">
+              <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Scan code QR dibawah ini untuk melakukan pembayaran lalu unggah bukti pembayaran</p>
+              <a href="id.qr-code-generator.com/" border="0" style="cursor:default" rel="nofollow"></a><img src="https://chart.googleapis.com/chart?cht=qr&chl=Anda%20sudah%20melakukan%20pembayaran!&chs=180x180&choe=UTF-8&chld=L|2">
+            </div>
             <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Harap untuk melakukan Screenshot pada nota pembayaran sebelum memesan tiket</p>
             <!-- Tambahan informasi atau elemen nota pembayaran lainnya bisa ditambahkan di sini -->
             <button type="submit" class="button">Pesan Sekarang</button>
@@ -201,22 +205,6 @@
   <!-- <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script> -->
 
   <script>
-function tampilkanPopup() {
-    let notaDewasa = document.getElementById("subtotalDewasa").value;
-    let notaAnak = document.getElementById("subtotalAnak").value;
-    let total = document.getElementById("total").value;
-    let metode_pembayaran = document.getElementById("card_type").value;
-
-    document.getElementById("notaDewasa").textContent = "Rp. " + notaDewasa;
-    document.getElementById("notaAnak").textContent = "Rp. " + notaAnak;
-    document.getElementById("notaTotal").textContent = "Rp. " + total;
-    document.getElementById("metodepembayaran").textContent = metode_pembayaran;
-
-    // Menampilkan popup
-    document.getElementById("popup").style.display = "block";
-}
-
-
   function onSubmit(token) {
         console.log('onSubmit called'); 
         document.getElementById("token").value = token;
@@ -290,25 +278,22 @@ function tampilkanPopup() {
     let notaDewasa = document.getElementById("subtotalDewasa").value;
     let notaAnak = document.getElementById("subtotalAnak").value;
     let total = document.getElementById("total").value;
-    let metode_Pembayaran = document.getElementById("card_type").value;
+    let metodePembayaran = document.getElementById("card_type").value;
 
     document.getElementById("notaDewasa").textContent = "Rp. " + notaDewasa;
     document.getElementById("notaAnak").textContent = "Rp. " + notaAnak;
     document.getElementById("notaTotal").textContent = "Rp. " + total;
-    document.getElementById("metodePembayaran").textContent = metode_Pembayaran;
+    document.getElementById("metodePembayaran").textContent = metodePembayaran;
 
     // Check if the selected payment method is "Qris"
-    
-    // if (metodePembayaran === "Qris") {
-    //   // Generate QR code
-    //   generateQRCode();
+    if (metodePembayaran === "Qris") {
 
-    //   // Show QR code container
-    //   document.getElementById("qrcode-container").classList.remove("hidden");
-    // } else {
-    //   // Hide QR code container
-    //   document.getElementById("qrcode-container").classList.add("hidden");
-    // }
+      // Show QR code container
+      document.getElementById("qrcode-container").classList.remove("hidden");
+    } else {
+      // Hide QR code container
+      document.getElementById("qrcode-container").classList.add("hidden");
+    }
 
     // Show the existing popup
     document.getElementById("popup").style.display = "block";

@@ -86,9 +86,7 @@ $result = $conn->query($sql);
                 <li class="submenu-item active">
                     <a href="../transaksi/transaksi.php">Transaksi</a>
                 </li>
-                <li class="submenu-item">
-                    <a href="../tiket/tiket.php">Tiket</a>
-                </li>
+
             </ul>
         </li>
         <li
@@ -128,16 +126,16 @@ $result = $conn->query($sql);
                     <span><?= $_SESSION['username'] ?></span>
                 </a>
             </li>
-            <li 
+            <!-- <li 
                 class="sidebar-item">
                 <a href="index.html" class='sidebar-link'>
                     <i class="fa fa-cogs" aria-hidden="true"></i>
                     <span>Pengaturan</span>
                 </a>
-            </li>
+            </li> -->
             <li 
                 class="sidebar-item">
-                <a href="../login.php" class='sidebar-link'>
+                <a href="../logout.php" class='sidebar-link'>
                     <i class="bi bi-door-open"></i>
                     <span>Logout</span>
                 </a>
