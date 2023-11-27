@@ -176,6 +176,13 @@ $result = $conn->query($sql);
                             <a href="laporan_tahunan.php" class="btn btn-primary">Laporan Tahunan</a>
                             <input class="form-control" type="number" style="margin-top: 10px;" id="searchInput" placeholder="Cari Data Berdasarkan Nomor Transaksi" value="<?php echo $searchInput; ?>">
                             <button onclick="searchData()" class="btn btn-primary" style="margin: 10px;">Cari</button>
+                            <div id="your-qr-result" class="hidden"></div>
+                            <h1>Scan Dengan Barcode</h1>
+                            <div style="display: flex; justify-content: center;">
+                                <div id="my-qr-reader" style="width: 500px;">
+                                
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Table with no outer spacing -->
@@ -262,6 +269,8 @@ $result = $conn->query($sql);
     <script src="../../../public/j  s/exportToPDF.js"></script>
     <script src="../../../public/js/print.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script src="https://unpkg.com/html5-qrcode"></script>
+
 
 
 <!-- Need: Apexcharts -->
@@ -283,6 +292,43 @@ function searchData() {
     window.location.href = 'transaksi.php?id_transaksi=' + searchInput;
 }
 </script>
+
+<script>
+    function domReady(fn) {
+        if (document.readyState === "complete" || document.readyState === "interactive") {
+            setTimeout(fn, 1);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    domReady(function () {
+        var myqr = document.getElementById('your-qr-result');
+        var lastResult, countResults = 0;
+
+        function onScanSuccess(decodeText, decodeResult) {
+            if (decodeText !== lastResult) {
+                ++countResults;
+                lastResult = decodeText;
+
+                // Set nilai hasil pemindaian ke dalam input pencarian
+                document.getElementById('searchInput').value = decodeText;
+
+                // Alert dapat dihilangkan jika tidak diperlukan
+                alert("Scanner Barcode Berhasil, Nomor Transaksi : " + decodeText, decodeResult);
+
+                myqr.innerHTML = `you scan ${countResults} : ${decodeText}`;
+            }
+        }
+
+        var htmlscanner = new Html5QrcodeScanner(
+            "my-qr-reader", { fps: 10, qrbox: 250 }
+        );
+
+        htmlscanner.render(onScanSuccess);
+    });
+</script>
+
 </body>
 
 </html>

@@ -89,7 +89,8 @@
                             break; // Keluar dari loop jika terjadi error
                         }
                     }
-                    header("location: ../transaksi/transaksi.php");
+                    $_SESSION['id_transaksi'] = $id_transaksi;
+                    header("location: nota.php");
                 } else {
                     echo "Error: " . $sql . "<br>" . $conn->error ;
                 }
@@ -174,6 +175,17 @@
         data-sitekey="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2" 
         data-callback='onSubmit' 
         data-action='submit' value="6LcUfDsoAAAAAKWDZQoulxVqCHCHc50yX1Akzij2">
+        <div id="konfirmasi" class="popup">
+          <div class="popup-content">
+              <span class="close" onclick="tutupKonfirmasi()">&times;</span>
+              <h2>Apakah anda yakin ingin memesan tiket sesuai dengan yang anda pesan?</h2>
+               <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> jika anda tidak mengupload bukti pembayaran menggunakan Qris, maka sistem kami mendeteksi sebagai bayar di loket</p>
+              <button type="submit" class="button">Iya</button>
+              <button onclick="tutupKonfirmasi()" class="button">Tidak</button>
+              </div>
+          </div>
+          </form>
+          <button onclick="tampilkanPopup()" class="button"><i class="fa fa-ticket" aria-hidden="true"></i> Buat Nota Pembayaran</button>
           <div id="popup" class="popup">
           <div class="popup-content">
             <span class="close" onclick="tutupPopup()">&times;</span>
@@ -190,13 +202,11 @@
               <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Scan code QR dibawah ini untuk melakukan pembayaran lalu unggah bukti pembayaran</p>
               <a href="id.qr-code-generator.com/" border="0" style="cursor:default" rel="nofollow"></a><img src="https://chart.googleapis.com/chart?cht=qr&chl=Anda%20sudah%20melakukan%20pembayaran!&chs=180x180&choe=UTF-8&chld=L|2">
             </div>
-            <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Harap untuk melakukan Screenshot pada nota pembayaran sebelum memesan tiket</p>
+            <!-- <p style="color: #4f4d4d; font-size: 15px;"><i class="fa fa-info-circle" aria-hidden="true"></i> Harap untuk melakukan Screenshot pada nota pembayaran sebelum memesan tiket</p> -->
             <!-- Tambahan informasi atau elemen nota pembayaran lainnya bisa ditambahkan di sini -->
-            <button type="submit" class="button">Pesan Sekarang</button>
+            <button onclick="tampilkanKonfirmasi()" class="button">Pesan Sekarang</button>
           </div>
         </div>
-          </form>
-          <button onclick="tampilkanPopup()" class="button"><i class="fa fa-ticket" aria-hidden="true"></i> Buat Nota Pembayaran</button>
         </div>
       </div>
     </div>
@@ -314,6 +324,14 @@ function tampilkanPopup() {
 
     // Hide the existing popup
     document.getElementById("popup").style.display = "none";
+  }
+
+  function tampilkanKonfirmasi() {
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("konfirmasi").style.display = "block";
+  }
+  function tutupKonfirmasi() {
+    document.getElementById("konfirmasi").style.display = "none";
   }
 
   </script>  

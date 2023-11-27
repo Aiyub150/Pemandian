@@ -18,6 +18,7 @@ class ComposerStaticInita59fdf2228b7d3ed3622d143cbb869e0
         array (
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Http\\Client\\' => 16,
+            'Picqer\\Barcode\\' => 15,
         ),
         'G' => 
         array (
@@ -31,12 +32,16 @@ class ComposerStaticInita59fdf2228b7d3ed3622d143cbb869e0
     public static $prefixDirsPsr4 = array (
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/http-client/src',
+        ),
+        'Picqer\\Barcode\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/picqer/php-barcode-generator/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

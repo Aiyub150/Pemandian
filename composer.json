@@ -1,5 +1,6 @@
 {
     "require": {
-        "gopay/payments-sdk-php": "^1.7"
+        "gopay/payments-sdk-php": "^1.7",
+        "picqer/php-barcode-generator": "^2.4"
     }
 }
